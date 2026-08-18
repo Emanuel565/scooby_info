@@ -536,11 +536,11 @@ export const updateOS = async (req: AuthRequest, res: Response): Promise<void> =
   }
 };
 
-// Exclusão de OS (Apenas Administradores)
+// Exclusão de OS (Administradores, Gerentes e Atendentes)
 export const deleteOS = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    if (!req.user || req.user.cargo !== 'ADMIN') {
-      res.status(403).json({ error: 'Apenas Administradores podem excluir ordens de serviço.' });
+    if (!req.user || !['ADMIN', 'GERENTE', 'ATENDENTE'].includes(req.user.cargo)) {
+      res.status(403).json({ error: 'Você não tem permissão para excluir ordens de serviço.' });
       return;
     }
 

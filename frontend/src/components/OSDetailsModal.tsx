@@ -57,8 +57,7 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
 
   if (!os) return null;
 
-  const isAdmin = user?.cargo === 'ADMIN';
-  const isManagerOrAdmin = user?.cargo === 'ADMIN' || user?.cargo === 'GERENTE';
+  const canEditOrDelete = user?.cargo === 'ADMIN' || user?.cargo === 'GERENTE' || user?.cargo === 'ATENDENTE' || user?.cargo === 'TECNICO_CELULAR';
 
   const getEquipmentIcon = (tipo: string) => {
     switch (tipo) {
@@ -226,8 +225,8 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Botão de Edição (Admin / Gerente) */}
-            {isManagerOrAdmin && !isEditing && (
+            {/* Botão de Edição */}
+            {canEditOrDelete && !isEditing && (
               <button
                 onClick={handleStartEdit}
                 className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -238,8 +237,8 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
               </button>
             )}
 
-            {/* Botão de Exclusão (Admin) */}
-            {isAdmin && !isEditing && (
+            {/* Botão de Exclusão */}
+            {canEditOrDelete && !isEditing && (
               <button
                 onClick={handleDeleteOS}
                 disabled={deleting}
