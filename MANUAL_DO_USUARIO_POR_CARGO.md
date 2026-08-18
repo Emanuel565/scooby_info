@@ -1,4 +1,5 @@
 # 📖 Manual do Usuário Scooby OS: Passo a Passo por Cargo
+**Desenvolvido por Emanuel Carvalho** • Scooby Assistência Técnica
 
 Este documento é o guia oficial de operação do **Scooby OS**, detalhando o passo a passo para cada membro da equipe: **Atendentes**, **Técnicos Especialistas**, **Técnicos de Celular**, **Trainees**, **Gerentes** e **Administradores**.
 

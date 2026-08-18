@@ -1,4 +1,5 @@
 # 📖 Manual Passo a Passo: Instalação e Uso do Scooby OS
+**Desenvolvido por Emanuel Carvalho** • Scooby Assistência Técnica
 
 Este guia detalha como instalar, configurar e operar o **Scooby OS** no computador Servidor (Central) e nas estações de trabalho da sua assistência técnica (**Windows** e **ChromeOS Flex**).
 
