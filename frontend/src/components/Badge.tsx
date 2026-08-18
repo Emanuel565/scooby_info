@@ -86,8 +86,9 @@ export const RoleBadge: React.FC<{ role: UserRole }> = ({ role }) => {
     ADMIN: { label: 'Administrador', style: 'bg-brand-500/20 text-brand-300 border-brand-500/40' },
     GERENTE: { label: 'Gerente', style: 'bg-purple-500/20 text-purple-300 border-purple-500/40' },
     ATENDENTE: { label: 'Atendente Balcão', style: 'bg-teal-500/20 text-teal-300 border-teal-500/40' },
-    TECNICO: { label: 'Técnico Geral', style: 'bg-blue-500/20 text-blue-300 border-blue-500/40' },
-    TECNICO_CELULAR: { label: 'Técnico Celular (Híbrido)', style: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' }
+    TECNICO: { label: 'Técnico Especialista', style: 'bg-blue-500/20 text-blue-300 border-blue-500/40' },
+    TECNICO_CELULAR: { label: 'Técnico Celular (Híbrido)', style: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' },
+    TRAINEE: { label: '🎓 Técnico Trainee', style: 'bg-amber-500/20 text-amber-300 border-amber-500/40' }
   };
 
   const c = configs[role] || configs.TECNICO;

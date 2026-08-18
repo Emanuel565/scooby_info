@@ -63,7 +63,7 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
 
     const tecnicos = await prisma.usuario.findMany({
       where: {
-        cargo: { in: ['TECNICO', 'TECNICO_CELULAR', 'ADMIN', 'GERENTE'] }
+        cargo: { in: ['TECNICO', 'TECNICO_CELULAR', 'TRAINEE', 'ADMIN', 'GERENTE'] }
       },
       select: {
         id: true,

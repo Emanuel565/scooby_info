@@ -474,6 +474,7 @@ export const AdminUsers: React.FC = () => {
                   >
                     <option value="TECNICO">🔧 Técnico Geral (Note, PC, Impressora)</option>
                     <option value="TECNICO_CELULAR">📱 Técnico Celulares (Híbrido / Autonomia)</option>
+                    <option value="TRAINEE">🎓 Técnico Trainee (Em Treinamento)</option>
                     <option value="ATENDENTE">📋 Atendente de Balcão / Recepção</option>
                     <option value="GERENTE">🛡️ Gerente de Triagem (Kanban)</option>
                     <option value="ADMIN">👑 Administrador Geral</option>
@@ -492,7 +493,7 @@ export const AdminUsers: React.FC = () => {
                 </div>
               </div>
 
-              {(cargo === 'TECNICO' || cargo === 'TECNICO_CELULAR' || cargo === 'GERENTE') && (
+              {(cargo === 'TECNICO' || cargo === 'TECNICO_CELULAR' || cargo === 'TRAINEE' || cargo === 'GERENTE') && (
                 <div className="space-y-2 p-3 bg-slate-950/60 rounded-xl border border-white/5">
                   <label className="block text-slate-300 font-semibold text-xs">
                     Especialidades de Bancada:
@@ -596,6 +597,7 @@ export const AdminUsers: React.FC = () => {
                   >
                     <option value="TECNICO">🔧 Técnico Geral (Note, PC, Impressora)</option>
                     <option value="TECNICO_CELULAR">📱 Técnico Celulares (Híbrido / Autonomia)</option>
+                    <option value="TRAINEE">🎓 Técnico Trainee (Em Treinamento)</option>
                     <option value="ATENDENTE">📋 Atendente de Balcão / Recepção</option>
                     <option value="GERENTE">🛡️ Gerente de Triagem (Kanban)</option>
                     <option value="ADMIN">👑 Administrador Geral</option>
@@ -614,7 +616,7 @@ export const AdminUsers: React.FC = () => {
                 />
               </div>
 
-              {(cargo === 'TECNICO' || cargo === 'TECNICO_CELULAR' || cargo === 'GERENTE') && (
+              {(cargo === 'TECNICO' || cargo === 'TECNICO_CELULAR' || cargo === 'TRAINEE' || cargo === 'GERENTE') && (
                 <div className="space-y-2 p-3 bg-slate-950/60 rounded-xl border border-white/5">
                   <label className="block text-slate-300 font-semibold text-xs">
                     Especialidades de Bancada:

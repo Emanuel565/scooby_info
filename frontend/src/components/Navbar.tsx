@@ -98,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat, unreadChatCount }) =
               </Link>
             )}
 
-            {(user.cargo === 'ADMIN' || user.cargo === 'ATENDENTE' || user.cargo === 'GERENTE' || user.cargo === 'TECNICO_CELULAR') && (
+            {(user.cargo === 'ADMIN' || user.cargo === 'ATENDENTE' || user.cargo === 'GERENTE' || user.cargo === 'TECNICO_CELULAR' || user.cargo === 'TRAINEE') && (
               <Link
                 to="/atendente"
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${location.pathname === '/atendente' ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
@@ -108,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat, unreadChatCount }) =
               </Link>
             )}
 
-            {(user.cargo === 'ADMIN' || user.cargo === 'TECNICO' || user.cargo === 'GERENTE' || user.cargo === 'TECNICO_CELULAR') && (
+            {(user.cargo === 'ADMIN' || user.cargo === 'TECNICO' || user.cargo === 'GERENTE' || user.cargo === 'TECNICO_CELULAR' || user.cargo === 'TRAINEE') && (
               <Link
                 to="/tecnico"
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${location.pathname === '/tecnico' ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}

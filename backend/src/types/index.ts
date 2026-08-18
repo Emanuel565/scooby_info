@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-export type UserRole = 'ADMIN' | 'GERENTE' | 'ATENDENTE' | 'TECNICO' | 'TECNICO_CELULAR';
+export type UserRole = 'ADMIN' | 'GERENTE' | 'ATENDENTE' | 'TECNICO' | 'TECNICO_CELULAR' | 'TRAINEE';
 
 export type OSStatus = 
   | 'TRIAGEM' 

@@ -32,7 +32,7 @@ export const AssignTechnicianModal: React.FC<AssignTechnicianModalProps> = ({ os
       .then(res => res.json())
       .then(data => {
         if (data.users) {
-          const techs = data.users.filter((u: User) => u.cargo === 'TECNICO' || u.cargo === 'TECNICO_CELULAR');
+          const techs = data.users.filter((u: User) => u.cargo === 'TECNICO' || u.cargo === 'TECNICO_CELULAR' || u.cargo === 'TRAINEE');
           setTechnicians(techs);
         }
       })

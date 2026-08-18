@@ -177,7 +177,7 @@ export const AtendenteDashboard: React.FC = () => {
           <span>🏢 Toda a Oficina</span>
         </button>
 
-        {teamMembers.filter(m => ['TECNICO', 'TECNICO_CELULAR', 'ADMIN', 'GERENTE'].includes(m.cargo)).map((t) => (
+        {teamMembers.filter(m => ['TECNICO', 'TECNICO_CELULAR', 'TRAINEE', 'ADMIN', 'GERENTE'].includes(m.cargo)).map((t) => (
           <button
             key={t.id}
             onClick={() => setSelectedTecnico(String(t.id))}
@@ -186,7 +186,7 @@ export const AtendenteDashboard: React.FC = () => {
             <Wrench className="w-3.5 h-3.5 text-teal-400" />
             <span>Fila de {t.nome}</span>
             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/30 text-white/80">
-              {t.cargo === 'TECNICO_CELULAR' ? 'Celulares/Games' : t.cargo}
+              {t.cargo === 'TECNICO_CELULAR' ? 'Celulares/Games' : t.cargo === 'TRAINEE' ? 'Trainee' : t.cargo}
             </span>
           </button>
         ))}

@@ -105,7 +105,7 @@ const ProtectedLayout: React.FC<{ children: React.ReactNode; allowedRoles?: stri
   if (allowedRoles && !allowedRoles.includes(user.cargo) && user.cargo !== 'ADMIN') {
     if (user.cargo === 'GERENTE') return <Navigate to="/gerente" replace />;
     if (user.cargo === 'ATENDENTE') return <Navigate to="/atendente" replace />;
-    if (user.cargo === 'TECNICO') return <Navigate to="/tecnico" replace />;
+    if (user.cargo === 'TECNICO' || user.cargo === 'TRAINEE') return <Navigate to="/tecnico" replace />;
     if (user.cargo === 'TECNICO_CELULAR') return <Navigate to="/celular-hibrido" replace />;
   }
 
@@ -161,7 +161,7 @@ const RootRedirect: React.FC = () => {
   if (user.cargo === 'GERENTE' || user.cargo === 'ADMIN') return <Navigate to="/gerente" replace />;
   if (user.cargo === 'TECNICO_CELULAR') return <Navigate to="/gerente" replace />;
   if (user.cargo === 'ATENDENTE') return <Navigate to="/atendente" replace />;
-  if (user.cargo === 'TECNICO') return <Navigate to="/tecnico" replace />;
+  if (user.cargo === 'TECNICO' || user.cargo === 'TRAINEE') return <Navigate to="/tecnico" replace />;
 
   return <Navigate to="/atendente" replace />;
 };
@@ -190,7 +190,7 @@ export const App: React.FC = () => {
             <Route
               path="/atendente"
               element={
-                <ProtectedLayout allowedRoles={['ATENDENTE', 'GERENTE', 'ADMIN', 'TECNICO_CELULAR']}>
+                <ProtectedLayout allowedRoles={['ATENDENTE', 'GERENTE', 'ADMIN', 'TECNICO_CELULAR', 'TRAINEE']}>
                   <AtendenteDashboard />
                 </ProtectedLayout>
               }
@@ -199,7 +199,7 @@ export const App: React.FC = () => {
             <Route
               path="/tecnico"
               element={
-                <ProtectedLayout allowedRoles={['TECNICO', 'GERENTE', 'ADMIN', 'TECNICO_CELULAR']}>
+                <ProtectedLayout allowedRoles={['TECNICO', 'GERENTE', 'ADMIN', 'TECNICO_CELULAR', 'TRAINEE']}>
                   <TecnicoBancada />
                 </ProtectedLayout>
               }

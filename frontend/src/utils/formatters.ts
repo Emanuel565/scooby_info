@@ -92,3 +92,15 @@ export const getEquipmentLabel = (type: string): string => {
   };
   return map[type] || type;
 };
+
+export const getRoleLabel = (role: string): string => {
+  const map: Record<string, string> = {
+    ADMIN: '👑 Administrador',
+    GERENTE: '🛡️ Gerente de Oficina',
+    ATENDENTE: '💼 Atendente / Recepção',
+    TECNICO: '🔧 Técnico Especialista',
+    TECNICO_CELULAR: '📱 Técnico Celulares & Consoles',
+    TRAINEE: '🎓 Técnico Trainee (Em Treinamento)'
+  };
+  return map[role] || role;
+};
