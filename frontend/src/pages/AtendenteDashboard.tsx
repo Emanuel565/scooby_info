@@ -15,7 +15,8 @@ import {
   Clock, 
   Laptop, 
   AlertCircle,
-  PackageCheck
+  PackageCheck,
+  Wrench
 } from 'lucide-react';
 
 export const AtendenteDashboard: React.FC = () => {
@@ -23,15 +24,27 @@ export const AtendenteDashboard: React.FC = () => {
   const { refreshTrigger } = useSocket();
 
   const [osList, setOsList] = useState<OrdemServico[]>([]);
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('TODOS');
   const [selectedTipo, setSelectedTipo] = useState('TODOS');
+  const [selectedTecnico, setSelectedTecnico] = useState<string>('TODOS'); // TODOS, SEM_TECNICO, ou ID do técnico
 
   // Modais
   const [showNewOSModal, setShowNewOSModal] = useState(false);
   const [selectedOSDetails, setSelectedOSDetails] = useState<OrdemServico | null>(null);
   const [selectedOSPrint, setSelectedOSPrint] = useState<OrdemServico | null>(null);
+
+  const fetchTeam = async () => {
+    try {
+      const res = await fetch('/api/chat/membros', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('scooby_token')}` }
+      });
+      const data = await res.json();
+      if (res.ok) setTeamMembers(data.usuarios || []);
+    } catch {}
+  };
 
   const fetchOS = async () => {
     try {
@@ -39,13 +52,20 @@ export const AtendenteDashboard: React.FC = () => {
       if (search) params.append('search', search);
       if (selectedStatus !== 'TODOS') params.append('status', selectedStatus);
       if (selectedTipo !== 'TODOS') params.append('tipo_equipamento', selectedTipo);
+      if (selectedTecnico !== 'TODOS' && selectedTecnico !== 'SEM_TECNICO') {
+        params.append('tecnico_id', selectedTecnico);
+      }
 
       const res = await fetch(`/api/os?${params.toString()}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('scooby_token')}` }
       });
       const data = await res.json();
       if (data.os) {
-        setOsList(data.os);
+        let list = data.os;
+        if (selectedTecnico === 'SEM_TECNICO') {
+          list = list.filter((o: OrdemServico) => !o.tecnico_id);
+        }
+        setOsList(list);
       }
     } catch (e) {
       console.error('Erro ao buscar OS:', e);
@@ -55,8 +75,12 @@ export const AtendenteDashboard: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchTeam();
+  }, []);
+
+  useEffect(() => {
     fetchOS();
-  }, [refreshTrigger, search, selectedStatus, selectedTipo]);
+  }, [refreshTrigger, search, selectedStatus, selectedTipo, selectedTecnico]);
 
   const handleDeliver = async (os: OrdemServico) => {
     if (!window.confirm(`Confirmar entrega da OS ${os.codigo_os} para o cliente ${os.cliente_nome}?`)) return;
@@ -142,6 +166,38 @@ export const AtendenteDashboard: React.FC = () => {
             <p className="text-xl font-extrabold text-emerald-400">{totalProntasEntrega} <span className="text-xs font-normal text-slate-400">aguardando cliente</span></p>
           </div>
         </div>
+      </div>
+
+      {/* Seletor Rápido de Filas de Trabalho por Técnico */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+        <button
+          onClick={() => setSelectedTecnico('TODOS')}
+          className={`px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${selectedTecnico === 'TODOS' ? 'bg-brand-500 text-white shadow-glow-teal' : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/5'}`}
+        >
+          <span>🏢 Toda a Oficina</span>
+        </button>
+
+        {teamMembers.filter(m => ['TECNICO', 'TECNICO_CELULAR', 'ADMIN', 'GERENTE'].includes(m.cargo)).map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setSelectedTecnico(String(t.id))}
+            className={`px-3.5 py-2 rounded-xl font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${selectedTecnico === String(t.id) ? 'bg-teal-500 text-white font-bold shadow-glow-teal' : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/5'}`}
+          >
+            <Wrench className="w-3.5 h-3.5 text-teal-400" />
+            <span>Fila de {t.nome}</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/30 text-white/80">
+              {t.cargo === 'TECNICO_CELULAR' ? 'Celulares/Games' : t.cargo}
+            </span>
+          </button>
+        ))}
+
+        <button
+          onClick={() => setSelectedTecnico('SEM_TECNICO')}
+          className={`px-3.5 py-2 rounded-xl font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${selectedTecnico === 'SEM_TECNICO' ? 'bg-purple-600 text-white font-bold shadow-lg' : 'bg-slate-900/80 hover:bg-slate-800 text-purple-300 border border-purple-500/20'}`}
+        >
+          <Clock className="w-3.5 h-3.5" />
+          <span>⏳ Aguardando Técnico</span>
+        </button>
       </div>
 
       {/* Barra de Filtros & Busca */}

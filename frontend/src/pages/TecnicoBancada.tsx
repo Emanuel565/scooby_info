@@ -14,6 +14,8 @@ export const TecnicoBancada: React.FC = () => {
   const { refreshTrigger } = useSocket();
 
   const [osList, setOsList] = useState<OrdemServico[]>([]);
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [selectedTecnicoFilter, setSelectedTecnicoFilter] = useState<string>('MEU'); // MEU, TODOS, ou ID
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState<string>('ATIVAS');
 
@@ -22,6 +24,16 @@ export const TecnicoBancada: React.FC = () => {
   const [selectedOSDetails, setSelectedOSDetails] = useState<OrdemServico | null>(null);
   const [selectedOSPrint, setSelectedOSPrint] = useState<OrdemServico | null>(null);
   const [selectedOSAssign, setSelectedOSAssign] = useState<OrdemServico | null>(null);
+
+  const fetchTeam = async () => {
+    try {
+      const res = await fetch('/api/chat/membros', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('scooby_token')}` }
+      });
+      const data = await res.json();
+      if (res.ok) setTeamMembers(data.usuarios || []);
+    } catch {}
+  };
 
   const fetchOS = async () => {
     try {
@@ -40,11 +52,22 @@ export const TecnicoBancada: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchTeam();
+  }, []);
+
+  useEffect(() => {
     fetchOS();
   }, [refreshTrigger]);
 
-  // Filtragem inteligente da bancada
+  // Filtragem inteligente da bancada por técnico e status
   const filteredOS = osList.filter(o => {
+    // Filtro por técnico
+    if (selectedTecnicoFilter === 'MEU' && user?.cargo === 'TECNICO') {
+      if (o.tecnico_id !== user.id) return false;
+    } else if (selectedTecnicoFilter !== 'TODOS' && selectedTecnicoFilter !== 'MEU') {
+      if (o.tecnico_id !== Number(selectedTecnicoFilter)) return false;
+    }
+
     if (selectedFilter === 'ATIVAS') return ['EM_ANDAMENTO', 'AGUARDANDO_PECA', 'TESTES', 'AGUARDANDO_APROVACAO'].includes(o.status);
     if (selectedFilter === 'ESPERA') return o.status === 'AGUARDANDO_APROVACAO';
     if (selectedFilter === 'CONCLUIDAS') return o.status === 'CONCLUIDO' || o.status === 'ENTREGUE';
@@ -84,10 +107,10 @@ export const TecnicoBancada: React.FC = () => {
         <div>
           <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
             <Wrench className="w-6 h-6 text-brand-400" />
-            Minha Bancada de Manutenção
+            {user?.cargo === 'TECNICO' ? 'Minha Bancada de Manutenção' : 'Bancada Técnica de Manutenção'}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Fila de ordens de serviço atribuídas a você. Ordens enviadas para aprovação permanecem em modo espera.
+            Fila de ordens de serviço atribuídas para manutenção e testes de bancada.
           </p>
         </div>
 
@@ -120,6 +143,29 @@ export const TecnicoBancada: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Seletor de Bancada para Gestores e Admins */}
+      {(user?.cargo === 'ADMIN' || user?.cargo === 'GERENTE') && (
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+          <span className="text-slate-400 font-semibold mr-1">Filtrar por Técnico:</span>
+          <button
+            onClick={() => setSelectedTecnicoFilter('TODOS')}
+            className={`px-3 py-1.5 rounded-xl font-bold flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap ${selectedTecnicoFilter === 'TODOS' ? 'bg-brand-500 text-white shadow-glow-teal' : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/5'}`}
+          >
+            <span>🏢 Todas as Bancadas</span>
+          </button>
+          {teamMembers.filter(m => ['TECNICO', 'TECNICO_CELULAR', 'ADMIN'].includes(m.cargo)).map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setSelectedTecnicoFilter(String(t.id))}
+              className={`px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap ${selectedTecnicoFilter === String(t.id) ? 'bg-teal-500 text-white font-bold shadow-glow-teal' : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/5'}`}
+            >
+              <Wrench className="w-3 h-3 text-teal-400" />
+              <span>Bancada de {t.nome}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Grid de OS da Bancada */}
       {loading ? (
