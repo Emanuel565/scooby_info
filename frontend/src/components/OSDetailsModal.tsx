@@ -20,7 +20,9 @@ import {
   Edit3,
   Trash2,
   Save,
-  Check
+  Check,
+  RotateCcw,
+  CheckCircle
 } from 'lucide-react';
 
 interface OSDetailsModalProps {
@@ -202,6 +204,29 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
       alert(err.message);
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleQuickStatusChange = async (novoStatus: string, motivo?: string) => {
+    try {
+      const res = await fetch(`/api/os/${os.id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('scooby_token')}`
+        },
+        body: JSON.stringify({
+          status: novoStatus,
+          observacao: motivo || `Status alterado para ${novoStatus} por ${user?.nome}.`
+        })
+      });
+      if (res.ok) {
+        setFeedbackMsg(`Etapa alterada para ${novoStatus} com sucesso!`);
+        if (onRefresh) onRefresh();
+        setTimeout(() => setFeedbackMsg(null), 3000);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -518,6 +543,80 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
             {/* Conteúdo das Abas */}
             <div className="p-6 overflow-y-auto space-y-4 text-xs">
               
+              {/* Barra de Mudança Rápida de Etapa / Reabertura de OS */}
+              <div className="p-3 bg-slate-950/80 rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <RotateCcw className="w-4 h-4 text-brand-400 shrink-0" />
+                  <div>
+                    <span className="font-bold text-white block">
+                      Etapa Atual: <span className="text-brand-300 font-mono">{os.status}</span>
+                    </span>
+                    <span className="text-[10.5px] text-slate-400">
+                      Mova para qualquer etapa ou reabra a OS se precisar refazer testes ou manutenção
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {os.status !== 'EM_ANDAMENTO' && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickStatusChange('EM_ANDAMENTO', 'OS movida/reaberta para a Bancada Técnica em andamento.')}
+                      className="px-2.5 py-1 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 text-[10.5px] font-semibold flex items-center gap-1 transition-all cursor-pointer"
+                      title="Mover ou Reabrir na Bancada em Reparo"
+                    >
+                      <Wrench className="w-3 h-3" />
+                      <span>Bancada (Em Andamento)</span>
+                    </button>
+                  )}
+
+                  {os.status !== 'TESTES' && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickStatusChange('TESTES', 'OS movida para a etapa de Testes Finais de Qualidade.')}
+                      className="px-2.5 py-1 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-[10.5px] font-semibold flex items-center gap-1 transition-all cursor-pointer"
+                      title="Mover para Testes Finais"
+                    >
+                      <span>🧪 Testes Finais</span>
+                    </button>
+                  )}
+
+                  {os.status !== 'AGUARDANDO_APROVACAO' && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickStatusChange('AGUARDANDO_APROVACAO', 'OS colocada em espera de aprovação do cliente.')}
+                      className="px-2.5 py-1 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40 text-[10.5px] font-semibold flex items-center gap-1 transition-all cursor-pointer"
+                      title="Mover para Aguardando Aprovação"
+                    >
+                      <span>⏳ Aguardando Aprovação</span>
+                    </button>
+                  )}
+
+                  {os.status !== 'AGUARDANDO_PECA' && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickStatusChange('AGUARDANDO_PECA', 'OS aguardando chegada de peças.')}
+                      className="px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10.5px] font-semibold flex items-center gap-1 transition-all cursor-pointer"
+                      title="Mover para Aguardando Peça"
+                    >
+                      <span>📦 Aguardando Peça</span>
+                    </button>
+                  )}
+
+                  {os.status !== 'CONCLUIDO' && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickStatusChange('CONCLUIDO', 'OS concluída com sucesso pelo técnico.')}
+                      className="px-2.5 py-1 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[10.5px] font-semibold flex items-center gap-1 transition-all cursor-pointer"
+                      title="Finalizar e marcar como Pronto"
+                    >
+                      <CheckCircle className="w-3 h-3" />
+                      <span>✅ Pronto (Concluído)</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
               {/* WhatsApp Quick Actions */}
               <div className="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-2xl space-y-2">
                 <div className="flex items-center justify-between">

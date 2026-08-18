@@ -282,9 +282,14 @@ export const updateOSStatus = async (req: AuthRequest, res: Response): Promise<v
       if (!currentOS.tecnico_id) {
         updateData.tecnico_id = req.user.id;
       }
-    }
-    if (status === 'ENTREGUE') {
+    } else if (status === 'ENTREGUE') {
       updateData.entregueEm = new Date();
+    } else {
+      // Se a OS estava finalizada ou entregue e voltou para bancada/testes/peça/triagem, limpa conclusão
+      if (statusAnterior === 'CONCLUIDO' || statusAnterior === 'ENTREGUE') {
+        updateData.concluidoEm = null;
+        updateData.entregueEm = null;
+      }
     }
 
     const updatedOS = await prisma.ordemServico.update({
@@ -298,12 +303,16 @@ export const updateOSStatus = async (req: AuthRequest, res: Response): Promise<v
       }
     });
 
+    const isReabertura = (statusAnterior === 'CONCLUIDO' || statusAnterior === 'ENTREGUE') && status !== 'CONCLUIDO' && status !== 'ENTREGUE';
+
     await prisma.logHistorico.create({
       data: {
         os_id: updatedOS.id,
         usuario_id: req.user.id,
-        acao: status === 'CONCLUIDO' ? 'FINALIZADO' : 'MUDANCA_STATUS',
-        descricao: observacao || `Status alterado de ${statusAnterior} para ${status} por ${req.user.nome}${status === 'CONCLUIDO' ? ' (Serviço finalizado por ' + req.user.nome + ')' : ''}`,
+        acao: isReabertura ? 'REABERTURA_OS' : status === 'CONCLUIDO' ? 'FINALIZADO' : 'MUDANCA_STATUS',
+        descricao: observacao || (isReabertura 
+          ? `Ordem de Serviço REABERTA por ${req.user.nome} e movida de ${statusAnterior} para ${status}.` 
+          : `Status alterado de ${statusAnterior} para ${status} por ${req.user.nome}${status === 'CONCLUIDO' ? ' (Serviço finalizado por ' + req.user.nome + ')' : ''}`),
         status_anterior: statusAnterior,
         status_novo: status
       }
