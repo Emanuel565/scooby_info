@@ -138,13 +138,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat, unreadChatCount }) =
               </Link>
             )}
 
-            {(user.cargo === 'ADMIN' || user.cargo === 'GERENTE') && (
+            {user.cargo === 'ADMIN' && (
               <Link
                 to="/admin/relatorios"
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${location.pathname === '/admin/relatorios' ? 'bg-brand-500 text-white shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
-                Relatórios
+                Faturamento & Relatórios
               </Link>
             )}
 

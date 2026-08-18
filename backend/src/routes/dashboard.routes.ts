@@ -6,6 +6,6 @@ const router = Router();
 
 router.use(authMiddleware);
 router.get('/stats', requireRole('GERENTE', 'ADMIN', 'ATENDENTE', 'TECNICO_CELULAR'), getDashboardStats);
-router.get('/reports', requireRole('ADMIN', 'GERENTE'), getAdminReports);
+router.get('/reports', requireRole('ADMIN'), getAdminReports);
 
 export default router;

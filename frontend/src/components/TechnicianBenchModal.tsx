@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { OrdemServico, PecaItem } from '../types';
 import { formatCurrency, formatDuration } from '../utils/formatters';
 import { 
@@ -41,6 +42,9 @@ export const TechnicianBenchModal: React.FC<TechnicianBenchModalProps> = ({
   onSuccess
 }) => {
   if (!os || isOpen === false) return null;
+
+  const { user } = useAuth();
+  const isAdmin = user?.cargo === 'ADMIN';
 
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [seconds, setSeconds] = useState(os.tempo_bancada_segundos || 0);
@@ -549,19 +553,21 @@ export const TechnicianBenchModal: React.FC<TechnicianBenchModalProps> = ({
             )}
           </div>
 
-          {/* PAINEL DE APURAÇÃO FINANCEIRA & LUCRO DA OS */}
+          {/* PAINEL DE APURAÇÃO FINANCEIRA & TOTAL DO CLIENTE */}
           <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-950 via-navy-950 to-slate-950 border-2 border-emerald-500/40 space-y-3">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <span className="font-extrabold text-xs uppercase tracking-wider text-white flex items-center gap-1.5">
                 <DollarSign className="w-4 h-4 text-emerald-400" />
-                Resumo Financeiro & Lucro da OS
+                {isAdmin ? 'Resumo Financeiro & Lucro da OS (Gestão)' : 'Composição do Orçamento'}
               </span>
-              <span className="text-[11px] font-bold text-emerald-400 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20">
-                Margem de Lucro: {margemLucro}%
-              </span>
+              {isAdmin && (
+                <span className="text-[11px] font-bold text-emerald-400 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20">
+                  Margem de Lucro: {margemLucro}%
+                </span>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-center">
+            <div className={`grid grid-cols-1 ${isAdmin ? 'sm:grid-cols-4' : 'sm:grid-cols-2'} gap-3 items-center`}>
               
               {/* Total Serviços */}
               <div className="p-2.5 rounded-xl bg-brand-950/40 border border-brand-500/20 text-center">
@@ -575,17 +581,22 @@ export const TechnicianBenchModal: React.FC<TechnicianBenchModalProps> = ({
                 <p className="font-bold text-white text-sm mt-0.5">{formatCurrency(totalPecasVenda)}</p>
               </div>
 
-              {/* Custo Total das Peças */}
-              <div className="p-2.5 rounded-xl bg-orange-950/30 border border-orange-500/20 text-center">
-                <span className="block text-orange-300 text-[10px] uppercase">(-) Custo Peças</span>
-                <p className="font-bold text-orange-400 text-sm mt-0.5">{formatCurrency(totalPecasCusto)}</p>
-              </div>
+              {/* Métricas Internas de Custo e Lucro apenas para ADMIN */}
+              {isAdmin && (
+                <>
+                  {/* Custo Total das Peças */}
+                  <div className="p-2.5 rounded-xl bg-orange-950/30 border border-orange-500/20 text-center">
+                    <span className="block text-orange-300 text-[10px] uppercase">(-) Custo Peças</span>
+                    <p className="font-bold text-orange-400 text-sm mt-0.5">{formatCurrency(totalPecasCusto)}</p>
+                  </div>
 
-              {/* Lucro Líquido da OS */}
-              <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-center">
-                <span className="block text-emerald-300 text-[10px] uppercase font-bold">(=) Lucro Líquido</span>
-                <p className="font-black text-emerald-400 text-base mt-0.5">+{formatCurrency(lucroTotalOS)}</p>
-              </div>
+                  {/* Lucro Líquido da OS */}
+                  <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-center">
+                    <span className="block text-emerald-300 text-[10px] uppercase font-bold">(=) Lucro Líquido</span>
+                    <p className="font-black text-emerald-400 text-base mt-0.5">+{formatCurrency(lucroTotalOS)}</p>
+                  </div>
+                </>
+              )}
 
             </div>
 

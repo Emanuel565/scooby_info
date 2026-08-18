@@ -107,6 +107,8 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
       }
     });
 
+    const isAdmin = req.user?.cargo === 'ADMIN';
+
     res.json({
       totalOS,
       statusMap,
@@ -116,9 +118,9 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
         criticas24h: criticas24hCount
       },
       tecnicosCarga: parsedTecnicos,
-      faturamento: {
+      faturamento: isAdmin ? {
         totalConcluido: financeiro._sum.valor_final || 0
-      }
+      } : null
     });
   } catch (error) {
     console.error('Erro ao obter estatísticas:', error);

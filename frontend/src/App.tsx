@@ -235,7 +235,7 @@ export const App: React.FC = () => {
             <Route
               path="/admin/relatorios"
               element={
-                <ProtectedLayout allowedRoles={['ADMIN', 'GERENTE']}>
+                <ProtectedLayout allowedRoles={['ADMIN']}>
                   <AdminReports />
                 </ProtectedLayout>
               }
