@@ -1,0 +1,85 @@
+================================================================================
+           🐶 SCOOBY INFORMÁTICA & ASSISTÊNCIA TÉCNICA
+               GUIA DE INSTALAÇÃO, USO E REDE LOCAL
+================================================================================
+Oficina Especializada em Notebooks, Celulares, Impressoras, PCs e Consoles
+Telefone / WhatsApp Oficial: (41) 3565-2008
+================================================================================
+
+1. COMO INICIAR O SISTEMA NO COMPUTADOR PRINCIPAL (SERVIDOR)
+--------------------------------------------------------------------------------
+Você NÃO precisa abrir o VS Code para usar o programa.
+
+Passo a Passo:
+1. Abra a pasta do projeto (scooby).
+2. Dê 2 cliques no arquivo:
+   👉 INICIAR_SCOOBY_OS.bat
+3. O servidor central será inicializado em segundo plano e abrirá
+   automaticamente o navegador em:
+   👉 http://localhost:3001
+4. Faça o login com seu usuário (Donizete, Juciane ou Emanuel).
+
+
+2. COMO CRIAR O ATALHO NA SUA ÁREA DE TRABALHO
+--------------------------------------------------------------------------------
+Para abrir o programa direto da Área de Trabalho:
+1. Dê 2 cliques no arquivo:
+   👉 CRIAR_ATALHO_AREA_DE_TRABALHO.bat
+2. Será criado um ícone oficial chamado "Scooby OS - Assistencia Tecnica"
+   diretamente na sua Área de Trabalho.
+
+
+3. USUÁRIOS E SENHAS INICIAIS
+--------------------------------------------------------------------------------
+Senha padrão inicial para todos os usuários: 123456
+
+👑 DONIZETE (Administrador Geral)
+   Login: donizete
+   Senha: 123456
+
+👑 JUCIANE (Administradora Geral)
+   Login: juciane
+   Senha: 123456
+
+🔧 EMANUEL (Técnico Especialista em Bancada)
+   Login: emanuel
+   Senha: 123456
+
+* Dica: Novos técnicos e atendentes podem ser cadastrados na aba
+  "Equipe & Cadastros" pelos administradores.
+
+
+4. COMO ACESSAR EM OUTROS COMPUTADORES / NOTEBOOKS NA MESMA REDE
+--------------------------------------------------------------------------------
+O computador principal atua como Servidor Central. Qualquer outro PC na loja
+conectado no mesmo Wi-Fi ou cabo de rede pode usar o sistema simultaneamente:
+
+1. No outro computador, abra o navegador (Google Chrome, Edge, etc.).
+2. Digite na barra de endereços:
+   👉 http://192.168.100.8:3001
+3. O sistema abrirá imediatamente e o usuário poderá fazer o login.
+
+
+5. COMO INSTALAR NO CHROME OS / CHROMEBOOK OU GOOGLE CHROME
+--------------------------------------------------------------------------------
+Você pode transformar o sistema em um aplicativo de tela cheia no Chrome OS:
+
+1. No Chrome OS, conecte-se ao Wi-Fi da loja.
+2. Abra o Google Chrome e acesse: http://192.168.100.8:3001
+3. Clique no menu de 3 pontinhos no canto superior direito do Chrome.
+4. Vá em "Salvar e compartilhar" (ou "Mais ferramentas").
+5. Clique em "Instalar página como aplicativo" (ou "Criar atalho" e marque
+   a opção "Abrir como janela").
+6. Pronto! O ícone do Scooby OS ficará fixado na barra de aplicativos do
+   Chrome OS, abrindo como um programa independente sem barra de navegação!
+
+
+6. RESOLUÇÃO DE PROBLEMAS DE REDE
+--------------------------------------------------------------------------------
+• Se outro computador não conseguir abrir "http://192.168.100.8:3001":
+  1. Verifique se o computador principal está ligado e com o arquivo
+     INICIAR_SCOOBY_OS.bat aberto.
+  2. Verifique se ambos os aparelhos estão no mesmo Wi-Fi da loja.
+  3. No Firewall do Windows do computador principal, certifique-se de permitir
+     o Node.js na porta 3001.
+================================================================================

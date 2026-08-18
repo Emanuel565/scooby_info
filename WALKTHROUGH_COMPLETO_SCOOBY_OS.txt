@@ -1,0 +1,114 @@
+================================================================================
+           🐶 SCOOBY INFORMÁTICA & ASSISTÊNCIA TÉCNICA
+       WALKTHROUGH: PACOTE COMPLETO DE MELHORIAS E RECURSOS DO SISTEMA
+================================================================================
+Oficina Especializada em Notebooks, Celulares, Impressoras, PCs e Consoles
+Telefone / WhatsApp Oficial: (41) 3565-2008
+================================================================================
+
+1. INTRODUÇÃO E VISÃO GERAL
+--------------------------------------------------------------------------------
+O Scooby OS foi desenvolvido sob medida para a Scooby Informática, combinando
+atendimento ágil no balcão, controle rigoroso na bancada técnica, gestão
+financeira com apuração de lucro real por Ordem de Serviço (OS) e relatórios
+gerenciais completos para os administradores.
+
+O sistema opera com sincronização em tempo real (WebSockets / Socket.io),
+permitindo que atendentes, técnicos e administradores trabalhem simultaneamente
+em computadores ou dispositivos móveis diferentes na mesma rede.
+
+
+2. MÓDULO DE GESTÃO DE ORDENS DE SERVIÇO (OS) & KANBAN
+--------------------------------------------------------------------------------
+• Entrada Rápida de Aparelho:
+  - Cadastro de cliente com auto-formatação de Telefone/WhatsApp e CPF.
+  - Seleção de categoria: Notebook, Smartphone, PC Desktop, Console, Impressora, etc.
+  - Registro de acessórios deixados (carregador, cabo, capa, chip, etc.).
+  - Registro de avarias pré-existentes e condições visuais.
+  - Checklist de entrada (Liga? Tela quebrada? Molhado? Parafusos faltando?).
+
+• Fluxo Inteligente de Status Kanban:
+  1. TRIAGEM (Aparelho recebido no balcão, aguardando avaliação).
+  2. EM ANDAMENTO / BANCADA (Técnico realizando diagnóstico e reparo).
+  3. AGUARDANDO PEÇA (Pausado até a chegada de componente de fornecedor).
+  4. AGUARDANDO APROVAÇÃO (Orçamento enviado ao cliente).
+     -> O card do técnico permanece em modo de espera visível e NÃO some.
+  5. TESTES FINAIS (Reparo feito, em estresse e controle de qualidade).
+  6. PRONTO / CONCLUÍDO (Pronto para retirada pelo cliente).
+  7. ENTREGUE (Aparelho retirado e serviço finalizado com sucesso).
+  8. CANCELADO (Orçamento não aprovado ou sem conserto viável).
+
+• Atribuição Colaborativa de Técnicos:
+  - Mais de um técnico pode atuar na mesma OS.
+  - Qualquer técnico pode se atribuir a uma OS em andamento.
+  - O sistema registra e credita o "Técnico que Finalizou" nos relatórios.
+
+
+3. MÓDULO DE CELULARES & SMARTPHONES (SENHA PADRÃO DESENHO)
+--------------------------------------------------------------------------------
+• Tela dedicada para assistência de smartphones e tablets.
+• Grid Interativo 3x3: Desenhe o padrão de desbloqueio com o mouse ou toque.
+• Conversão automática para sequência numérica (Ex: 1-2-3-5-7).
+• Campo de senha PIN / Alfanumérica alternativa.
+
+
+4. MÓDULO DE ESTOQUE, PREÇO DE CUSTO E LUCRO REAL POR OS
+--------------------------------------------------------------------------------
+• Catálogo Completo de Peças Mais Usadas:
+  - SSDs (120GB, 240GB, 480GB, 1TB NVMe M.2).
+  - Memórias RAM (DDR3, DDR4 8GB/16GB para Notebooks e Desktops).
+  - Telas de Celulares (iPhones Incell, Samsungs OLED).
+  - Baterias, Conectores USB-C, Pastas Térmicas e Tintas Epson.
+• Botão "Importar Mais Usados" em 1 clique.
+• Indicadores de Estoque:
+  - Saldo de Unidades em Estoque.
+  - Custo Total Investido (Capital Imobilizado).
+  - Valor Projetado de Venda.
+  - Lucro Potencial em Estoque.
+  - Alertas de Estoque Baixo.
+
+• Apuração do Lucro da OS em Tempo Real na Bancada:
+  - Exemplo Prático da Oficina:
+    SSD 240GB Venda: R$ 300,00  | Custo da Peça: R$ 150,00
+    Mão de Obra:     R$ 100,00
+    ------------------------------------------------------
+    Total da OS:     R$ 400,00  | Custo da Peça: R$ 150,00
+    LUCRO LÍQUIDO:   R$ 250,00  (Margem: 62,5%)
+
+
+5. IMPRESSÃO OFICIAL EM FOLHA A4
+--------------------------------------------------------------------------------
+• Formato padronizado 100% em Folha A4 com corte central:
+  - VIA 1 (Via do Cliente):
+    * Cabeçalho oficial com telefone (41) 3565-2008.
+    * Dados completos do cliente, aparelho, acessórios, avarias e defeito.
+    * Valores previstos, prazos e Termo Legal de Garantia de 90 dias (CDC).
+  - VIA 2 (Via da Oficina / Bancada):
+    * Senha do aparelho e padrão de desbloqueio.
+    * Checklist de entrada.
+    * Protocolo de Retirada com campo para assinatura do cliente no ato da entrega.
+
+
+6. WHATSAPP INSTANTÂNEO COM 4 MODELOS DE MENSAGENS
+--------------------------------------------------------------------------------
+Botões de 1 clique no detalhe da OS para enviar mensagens prontas:
+1. 📋 Enviar Orçamento (Com discriminação de peças e mão de obra).
+2. 🎉 Avisar: Pronto para Retirada! (Com valor final e endereço).
+3. ⏳ Avisar: Aguardando Peça (Mantém o cliente informado sobre o prazo).
+4. 🧪 Avisar: Em Testes Finais (Informa que o aparelho está sendo testado).
+
+
+7. RELATÓRIOS ADMINISTRATIVOS & FINANCEIROS
+--------------------------------------------------------------------------------
+• Filtros de Período:
+  - 📅 Relatório Diário (Hoje)
+  - 📅 Relatório Semanal (Últimos 7 dias)
+  - 📅 Relatório Mensal (Mês Atual)
+• Indicadores Principais:
+  - Faturamento Bruto Total (R$)
+  - Custo Total de Peças Utilizadas (R$)
+  - Lucro Líquido Realizado (R$) e Margem (%)
+  - Ticket Médio por Conserto
+  - Total de OS Finalizadas e Entregues
+• Extrato detalhado com indicação do Técnico que Finalizou cada serviço.
+================================================================================

@@ -1,0 +1,67 @@
+================================================================================
+           🐶 SCOOBY INFORMÁTICA & ASSISTÊNCIA TÉCNICA
+               GUIA DE BACKUP, RESTAURAÇÃO E SEGURANÇA
+================================================================================
+Oficina Especializada em Notebooks, Celulares, Impressoras, PCs e Consoles
+Telefone / WhatsApp Oficial: (41) 3565-2008
+================================================================================
+
+1. IMPORTÂNCIA DO BACKUP REGULAR
+--------------------------------------------------------------------------------
+O banco de dados do Scooby OS armazena:
+• Todas as Ordens de Serviço (clientes, defeitos, laudos, valores e históricos).
+• Catálogo de estoque (produtos, quantidades, preços de custo e venda).
+• Usuários e senhas da equipe.
+• Métricas financeiras e apuração de lucro.
+
+É altamente recomendável realizar backups diários ou semanais para garantir a
+total segurança das informações da oficina.
+
+
+2. MÉTODO 1: BACKUP EM 1 CLIQUE PELA INTERFACE (MAIS RÁPIDO)
+--------------------------------------------------------------------------------
+1. Faça login como Administrador (Donizete ou Juciane).
+2. No menu superior, clique em "Equipe & Cadastros" (ou acesse /admin/usuarios).
+3. No topo da página, clique no botão azul:
+   👉 💾 Fazer Backup (.db)
+4. O navegador fará o download instantâneo de um arquivo com data e hora:
+   Exemplo: scooby_os_backup_2026-08-17.db
+5. Salve esse arquivo em um Pen Drive, no Google Drive ou envie para seu e-mail.
+
+
+3. MÉTODO 2: BACKUP MANUAL DOS ARQUIVOS DO SISTEMA
+--------------------------------------------------------------------------------
+O banco de dados do Scooby OS é um arquivo SQLite local.
+
+Localização do Arquivo de Dados:
+📁 Pasta: scooby\backend\prisma\
+📄 Arquivo: dev.db
+
+Basta copiar o arquivo "dev.db" para qualquer pasta segura ou nuvem.
+
+
+4. COMO RESTAURAR O BACKUP EM CASO DE TROCA OU FORMATAÇÃO DO PC
+--------------------------------------------------------------------------------
+Caso precise restaurar seus dados em um computador novo ou recém-formatado:
+
+1. Instale o sistema no novo computador usando:
+   👉 INSTALADOR_AUTOMATICO.bat
+2. Feche o sistema (certifique-se de que a janela do terminal está fechada).
+3. Pegue o arquivo de backup que você salvou (ex: "scooby_os_backup_...db" ou "dev.db").
+4. Renomeie o arquivo para:
+   👉 dev.db
+5. Cole o arquivo na pasta:
+   📁 scooby\backend\prisma\ (substituindo o arquivo existente).
+6. Abra o sistema normalmente via:
+   👉 INICIAR_SCOOBY_OS.bat
+7. Pronto! Todas as ordens de serviço, clientes, estoque e relatórios estarão
+   100% restaurados exatamente como estavam no momento do backup.
+
+
+5. DICAS DE SEGURANÇA RECOMENDADAS
+--------------------------------------------------------------------------------
+• Mantenha pelo menos 1 cópia de backup fora do computador principal
+  (ex: Pen Drive na gaveta ou Google Drive/OneDrive).
+• Faça o backup sempre ao final do expediente ou semanalmente aos sábados.
+• Nunca delete a pasta "backend\prisma" sem antes ter uma cópia de segurança.
+================================================================================

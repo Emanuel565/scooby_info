@@ -1,0 +1,71 @@
+================================================================================
+           🐶 SCOOBY INFORMÁTICA & ASSISTÊNCIA TÉCNICA
+           GUIA: COMO ATUALIZAR O SISTEMA SEM PERDER DADOS
+================================================================================
+Oficina Especializada em Notebooks, Celulares, Impressoras, PCs e Consoles
+Telefone / WhatsApp Oficial: (41) 3565-2008
+================================================================================
+
+1. POR QUE OS SEUS DADOS ESTÃO SEGUROS?
+--------------------------------------------------------------------------------
+No Scooby OS, todo o banco de dados da oficina (Ordens de Serviço, Clientes,
+Estoque, Peças, Usuários e Relatórios Financeiros) fica isolado em um único
+arquivo:
+
+📁 Localização do Banco de Dados:
+   scooby\backend\prisma\dev.db
+
+O código visual do sistema (telas, botões, relatórios e lógica) fica nas pastas
+"frontend" e "backend\src".
+
+Portanto, atualizar arquivos de telas, relatórios ou funções do sistema
+NUNCA apaga ou altera o arquivo "dev.db" onde estão as suas OS e estoque!
+
+
+2. ATUALIZAÇÃO AUTOMÁTICA EM 1 CLIQUE (RECOMENDADO)
+--------------------------------------------------------------------------------
+Sempre que receber uma nova versão ou fizer melhorias no código do Scooby OS:
+
+1. Feche o sistema (feche a janela do terminal do Scooby OS, se estiver aberta).
+2. Dê 2 cliques no arquivo:
+   👉 ATUALIZAR_SISTEMA_SEM_PERDER_DADOS.bat
+
+O que este script faz automaticamente por você:
+• Passo 1: Faz uma cópia de segurança preventiva do seu banco "dev.db" na pasta
+  "backups_atualizacao\dev_backup_DATA_HORA.db".
+• Passo 2: Atualiza a estrutura do banco sem apagar nada existente (adiciona
+  novas colunas ou novas tabelas se houver).
+• Passo 3: Recompila o frontend e o backend com as novidades.
+• Passo 4: Conclui com sucesso em poucos segundos!
+
+3. Após terminar, basta iniciar o sistema normalmente:
+   👉 INICIAR_SCOOBY_OS.bat
+
+
+3. ATUALIZAÇÃO MANUAL (SE VOCÊ BAIXAR UMA NOVA PASTA DO PROJETO)
+--------------------------------------------------------------------------------
+Se você receber uma nova pasta inteira com o sistema atualizado:
+
+1. Antes de substituir qualquer pasta, copie o seu arquivo de banco:
+   📁 Copie: scooby\backend\prisma\dev.db
+   (Guarde essa cópia no seu Desktop ou Pen Drive).
+
+2. Substitua os arquivos do projeto pelos novos.
+
+3. Cole de volta o seu "dev.db" na pasta:
+   📁 scooby\backend\prisma\dev.db
+
+4. Execute o script:
+   👉 ATUALIZAR_SISTEMA_SEM_PERDER_DADOS.bat
+
+5. Pronto! O sistema estará na versão mais recente e com 100% de todas as suas
+   ordens de serviço, cadastros e estoques preservados.
+
+
+4. O QUE NUNCA FAZER EM PRODUÇÃO
+--------------------------------------------------------------------------------
+❌ NUNCA execute o comando "npx prisma migrate reset" (ele formata o banco).
+❌ NUNCA execute scripts de limpeza ou seed que contenham "deleteMany" se não
+   quiser zerar o sistema de propósito.
+❌ NUNCA delete a pasta "backend\prisma\dev.db" sem ter um backup.
+================================================================================

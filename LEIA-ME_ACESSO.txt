@@ -1,0 +1,50 @@
+===============================================================================
+    🐶 SCOOBY INFORMÁTICA & ASSISTÊNCIA TÉCNICA - GUIA DE USO
+===============================================================================
+
+COMO USAR O PROGRAMA NO DIA A DIA (SEM PRECISAR ABRIR O VS CODE):
+-----------------------------------------------------------------
+1. Dê 2 cliques no arquivo:
+   👉 INICIAR_SCOOBY_OS.bat
+
+2. O sistema irá inicializar e abrir automaticamente no seu navegador padrão:
+   👉 http://localhost:3001
+
+3. Se quiser criar um ícone direto na sua Área de Trabalho:
+   👉 Dê 2 cliques em "CRIAR_ATALHO_AREA_DE_TRABALHO.bat"
+
+
+ACESSOS E LOGINS OFICIAIS:
+--------------------------
+Senha padrão inicial para todos: 123456
+
+👑 DONIZETE (Administrador Geral)
+   Login: donizete
+   Senha: 123456
+
+👑 JUCIANE (Administradora Geral)
+   Login: juciane
+   Senha: 123456
+
+🔧 EMANUEL (Técnico Especialista em Bancada)
+   Login: emanuel
+   Senha: 123456
+
+
+ACESSO DE OUTROS COMPUTADORES / CELULARES NA MESMA OFICINA (Wi-Fi):
+-------------------------------------------------------------------
+Qualquer outro computador, notebook ou celular conectado no Wi-Fi da loja
+pode abrir o sistema digitando no navegador o IP da rede local:
+👉 Exemplo: http://192.168.100.8:3001
+
+
+RECURSOS PRINCIPAIS DISPONÍVEIS:
+--------------------------------
+• Entrada de OS com Checklist e Impressão A4 (Via do Cliente + Via da Oficina)
+• Painel Kanban com Triagem, Bancada, Espera e Concluídos
+• Módulo de Celulares & Smartphones com Senha Padrão Desenho (Grid 3x3)
+• Controle de Estoque com Preço de Custo, Preço de Venda e Apuração de Lucro
+• Relatórios Diários, Semanais e Mensais com Lucro Líquido Real e Técnico Finalizador
+• 4 Mensagens Prontas de WhatsApp em 1 Clique (Orçamento, Pronto, Peça, Testes)
+• Backup do Banco de Dados em 1 Clique (.db)
+===============================================================================
