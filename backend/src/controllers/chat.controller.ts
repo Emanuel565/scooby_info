@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth.middleware.js';
+import { AuthRequest } from '../types/index.js';
 import { io } from '../server.js';
 
 const prisma = new PrismaClient();

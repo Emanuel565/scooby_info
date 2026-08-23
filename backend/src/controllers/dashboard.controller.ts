@@ -1,11 +1,21 @@
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../types/index.js';
+import { cache } from '../services/cache.service.js';
 
 const prisma = new PrismaClient();
 
 export const getDashboardStats = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    const isAdmin = req.user?.cargo === 'ADMIN';
+    const cacheKey = `dashboard:stats:${isAdmin ? 'admin' : 'user'}`;
+    const cachedStats = await cache.get(cacheKey);
+
+    if (cachedStats) {
+      res.json(cachedStats);
+      return;
+    }
+
     const totalOS = await prisma.ordemServico.count();
     
     const statusCounts = await prisma.ordemServico.groupBy({
@@ -107,9 +117,7 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
       }
     });
 
-    const isAdmin = req.user?.cargo === 'ADMIN';
-
-    res.json({
+    const result = {
       totalOS,
       statusMap,
       prioridadeMap,
@@ -121,7 +129,12 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
       faturamento: isAdmin ? {
         totalConcluido: financeiro._sum.valor_final || 0
       } : null
-    });
+    };
+
+    // Cacheia por 30 segundos
+    await cache.set(cacheKey, result, 30);
+
+    res.json(result);
   } catch (error) {
     console.error('Erro ao obter estatísticas:', error);
     res.status(500).json({ error: 'Erro ao gerar dashboard de métricas' });
@@ -131,6 +144,13 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
 export const getAdminReports = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { periodo } = req.query; // 'semanal' | 'mensal' | 'mes_anterior' | 'geral'
+    const cacheKey = `dashboard:reports:${periodo || 'semanal'}`;
+    const cachedReport = await cache.get(cacheKey);
+
+    if (cachedReport) {
+      res.json(cachedReport);
+      return;
+    }
     
     const now = new Date();
     let dataInicio: Date;
@@ -258,7 +278,7 @@ export const getAdminReports = async (req: AuthRequest, res: Response): Promise<
     const desempenhoTecnicos = Object.values(tecnicoMap).sort((a, b) => b.faturamento - a.faturamento);
 
     // 5. Relatório Estruturado
-    res.json({
+    const reportResult = {
       periodo: {
         tipo: periodo || 'semanal',
         label: periodoLabel,
@@ -302,7 +322,12 @@ export const getAdminReports = async (req: AuthRequest, res: Response): Promise<
           dataCriacao: o.createdAt
         };
       })
-    });
+    };
+
+    // Cacheia relatório por 60 segundos
+    await cache.set(cacheKey, reportResult, 60);
+
+    res.json(reportResult);
   } catch (error) {
     console.error('Erro ao gerar relatório administrativo:', error);
     res.status(500).json({ error: 'Erro ao gerar relatório' });

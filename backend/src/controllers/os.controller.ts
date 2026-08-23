@@ -2,8 +2,15 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../types/index.js';
 import { io } from '../server.js';
+import { cache } from '../services/cache.service.js';
 
 const prisma = new PrismaClient();
+
+const invalidateDashboardCache = async () => {
+  try {
+    await cache.delPrefix('dashboard:');
+  } catch (e) {}
+};
 
 const generateOSCode = async (): Promise<string> => {
   const currentYear = new Date().getFullYear();
@@ -102,6 +109,8 @@ export const createOS = async (req: AuthRequest, res: Response): Promise<void> =
         io.emit('os:atribuida', { os: novaOS, tecnicoId });
       }
     }
+
+    invalidateDashboardCache();
 
     res.status(201).json({
       message: 'Ordem de Serviço criada com sucesso!',
@@ -322,6 +331,8 @@ export const updateOSStatus = async (req: AuthRequest, res: Response): Promise<v
       io.emit('os:status_alterado', { os: updatedOS, statusAnterior, statusNovo: status });
     }
 
+    invalidateDashboardCache();
+
     res.json({ message: 'Status atualizado com sucesso!', os: updatedOS });
   } catch (error) {
     console.error('Erro ao atualizar status da OS:', error);
@@ -390,6 +401,8 @@ export const assignTechnician = async (req: AuthRequest, res: Response): Promise
       io.emit('os:atribuida', { os: updatedOS, tecnicoId: Number(tecnico_id) });
     }
 
+    invalidateDashboardCache();
+
     res.json({ message: `OS direcionada para ${tecnico.nome} com sucesso!`, os: updatedOS });
   } catch (error) {
     console.error('Erro ao atribuir técnico:', error);
@@ -453,6 +466,8 @@ export const updateLaudoAndParts = async (req: AuthRequest, res: Response): Prom
     if (io) {
       io.emit('os:atualizada', updatedOS);
     }
+
+    invalidateDashboardCache();
 
     res.json({ message: 'Laudo técnico salvo com sucesso!', os: updatedOS });
   } catch (error) {
@@ -538,6 +553,8 @@ export const updateOS = async (req: AuthRequest, res: Response): Promise<void> =
       io.emit('os:atualizada', updatedOS);
     }
 
+    invalidateDashboardCache();
+
     res.json({ message: 'Ordem de Serviço atualizada com sucesso!', os: updatedOS });
   } catch (error) {
     console.error('Erro ao editar OS:', error);
@@ -571,6 +588,8 @@ export const deleteOS = async (req: AuthRequest, res: Response): Promise<void> =
     if (io) {
       io.emit('os:excluida', { id: osId, codigo_os: osExistente.codigo_os });
     }
+
+    invalidateDashboardCache();
 
     res.json({ message: `Ordem de Serviço ${osExistente.codigo_os} excluída com sucesso.` });
   } catch (error) {

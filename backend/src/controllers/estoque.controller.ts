@@ -1,13 +1,27 @@
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../types/index.js';
+import { cache } from '../services/cache.service.js';
 
 const prisma = new PrismaClient();
+
+const invalidateEstoqueCache = async () => {
+  try {
+    await cache.delPrefix('estoque:');
+  } catch (e) {}
+};
 
 // Listagem de Itens em Estoque com busca, filtro e totais
 export const listEstoque = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { search, categoria } = req.query;
+    const cacheKey = `estoque:list:${categoria || 'TODAS'}:${search || 'ALL'}`;
+    const cachedEstoque = await cache.get(cacheKey);
+
+    if (cachedEstoque) {
+      res.json(cachedEstoque);
+      return;
+    }
 
     const where: any = {};
 
@@ -50,7 +64,7 @@ export const listEstoque = async (req: AuthRequest, res: Response): Promise<void
 
     const lucroPotencialEstoque = valorTotalVendaEstoque - custoTotalEstoque;
 
-    res.json({
+    const result = {
       itens,
       metricas: {
         totalProdutosCadastrados: itens.length,
@@ -60,7 +74,11 @@ export const listEstoque = async (req: AuthRequest, res: Response): Promise<void
         lucroPotencialEstoque,
         itensBaixoEstoque
       }
-    });
+    };
+
+    await cache.set(cacheKey, result, 60);
+
+    res.json(result);
   } catch (error) {
     console.error('Erro ao listar estoque:', error);
     res.status(500).json({ error: 'Erro ao carregar estoque.' });
@@ -89,6 +107,8 @@ export const createEstoqueItem = async (req: AuthRequest, res: Response): Promis
         localizacao: localizacao ? String(localizacao).trim() : null
       }
     });
+
+    invalidateEstoqueCache();
 
     res.status(201).json({ message: 'Item cadastrado no estoque com sucesso!', item });
   } catch (error) {
@@ -133,6 +153,8 @@ export const updateEstoqueItem = async (req: AuthRequest, res: Response): Promis
       }
     });
 
+    invalidateEstoqueCache();
+
     res.json({ message: 'Item atualizado com sucesso!', item });
   } catch (error) {
     console.error('Erro ao atualizar item do estoque:', error);
@@ -148,6 +170,8 @@ export const deleteEstoqueItem = async (req: AuthRequest, res: Response): Promis
     await prisma.itemEstoque.delete({
       where: { id: Number(id) }
     });
+
+    invalidateEstoqueCache();
 
     res.json({ message: 'Item removido do estoque com sucesso.' });
   } catch (error) {
@@ -201,6 +225,8 @@ export const importDefaultEstoqueItems = async (req: AuthRequest, res: Response)
         criados++;
       }
     }
+
+    invalidateEstoqueCache();
 
     res.json({
       message: `Catálogo importado com sucesso! ${criados} novos itens cadastrados.`,

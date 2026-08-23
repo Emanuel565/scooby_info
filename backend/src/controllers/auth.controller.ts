@@ -360,6 +360,10 @@ export const deleteUser = async (req: AuthRequest, res: Response): Promise<void>
     }
 
     const targetUser = await prisma.usuario.findUnique({ where: { id: Number(id) } });
+    if (!targetUser) {
+      res.status(404).json({ error: 'Usuário não encontrado.' });
+      return;
+    }
 
     await prisma.usuario.delete({
       where: { id: Number(id) }
