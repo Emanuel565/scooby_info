@@ -8,7 +8,7 @@
 
     @page {
       size: A4;
-      margin: 15mm 15mm 15mm 15mm;
+      margin: 12mm 15mm 15mm 15mm;
       @bottom-right {
         content: "Página " counter(page);
         font-size: 8pt;
@@ -27,7 +27,7 @@
       font-family: 'Inter', sans-serif;
       color: #1e293b;
       background: #ffffff;
-      line-height: 1.5;
+      line-height: 1.45;
       font-size: 9.5pt;
     }
 
@@ -41,7 +41,7 @@
 
     /* CAPA */
     .cover-page {
-      height: 95vh;
+      height: 94vh;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -58,60 +58,66 @@
       background: rgba(45, 212, 191, 0.15);
       border: 1px solid #2dd4bf;
       color: #2dd4bf;
-      border-radius: 30px;
-      font-weight: 700;
       font-size: 9pt;
-      letter-spacing: 1px;
+      font-weight: 700;
+      border-radius: 20px;
       text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .cover-title {
-      font-size: 32pt;
+      font-size: 30pt;
       font-weight: 900;
       line-height: 1.1;
       color: #ffffff;
-      margin-top: 20px;
-    }
-
-    .cover-title span {
-      color: #2dd4bf;
+      margin-top: 15px;
     }
 
     .cover-subtitle {
       font-size: 13pt;
       color: #94a3b8;
-      margin-top: 12px;
-      line-height: 1.4;
+      margin-top: 10px;
+      font-weight: 400;
     }
 
-    .cover-roles {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 30px;
-    }
-
-    .role-tag {
+    .cover-author {
+      margin-top: 25px;
+      padding: 12px 18px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 9pt;
-      font-weight: 600;
-      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    .cover-author-title {
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    .cover-author-name {
+      font-size: 14pt;
+      font-weight: 900;
+      color: #ffffff;
+      margin-top: 2px;
     }
 
     .cover-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 15px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 20px;
+    }
+
+    .cover-tag {
       font-size: 8pt;
       color: #64748b;
     }
 
-    /* HEADER DAS PÁGINAS */
+    /* CONTEÚDO */
     .header-bar {
       display: flex;
       justify-content: space-between;
@@ -121,176 +127,141 @@
       margin-bottom: 16px;
     }
 
-    .header-bar .logo {
-      font-weight: 900;
-      font-size: 11pt;
-      color: #0f172a;
-    }
-
-    .header-bar .logo span {
-      color: #0d9488;
-    }
-
-    .header-bar .doc-title {
-      font-size: 8pt;
-      font-weight: 600;
-      color: #64748b;
-      text-transform: uppercase;
-    }
-
-    /* ESTILOS DE SEÇÃO */
-    h1 {
-      font-size: 16pt;
+    .header-title {
+      font-size: 13pt;
       font-weight: 800;
       color: #0f172a;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .section-desc {
-      font-size: 9pt;
-      color: #64748b;
-      margin-bottom: 16px;
+    .header-author-tag {
+      font-size: 8pt;
+      font-weight: 700;
+      color: #0284c7;
+      background: #e0f2fe;
+      padding: 3px 8px;
+      border-radius: 6px;
     }
 
     h2 {
-      font-size: 11.5pt;
-      font-weight: 700;
+      font-size: 13pt;
+      font-weight: 800;
       color: #0f172a;
-      margin-top: 14px;
       margin-bottom: 8px;
-      border-left: 4px solid #0d9488;
-      padding-left: 8px;
-    }
-
-    p {
-      margin-bottom: 8px;
-      color: #334155;
-    }
-
-    /* CARDS & BOXES */
-    .card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-    }
-
-    .card-title {
-      font-weight: 700;
-      font-size: 9.5pt;
-      color: #0f172a;
-      margin-bottom: 4px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .badge {
+    h3 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    p, li {
+      color: #334155;
+      font-size: 9pt;
+      margin-bottom: 5px;
+    }
+
+    ul, ol {
+      margin-left: 18px;
+      margin-bottom: 10px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .card-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #f8fafc;
+      margin-bottom: 12px;
+    }
+
+    .card-box-accent {
+      border: 1px solid #bae6fd;
+      background: #f0f9ff;
+    }
+
+    .card-box-gold {
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+    }
+
+    .card-box-emerald {
+      border: 1px solid #a7f3d0;
+      background: #ecfdf5;
+    }
+
+    .badge-role {
       display: inline-block;
       padding: 2px 7px;
       border-radius: 4px;
       font-size: 7.5pt;
       font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .badge-admin { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
-    .badge-gerente { background: #f3e8ff; color: #6b21a8; border: 1px solid #c084fc; }
-    .badge-atendente { background: #ccfbf1; color: #115e59; border: 1px solid #5eead4; }
-    .badge-tecnico { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
-    .badge-celular { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-    .badge-trainee { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .badge-atendente { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
+    .badge-tecnico { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .badge-celular { background: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
+    .badge-trainee { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-gerente { background: #fae8ff; color: #86198f; border: 1px solid #f5d0fe; }
+    .badge-admin { background: #f1f5f9; color: #0f172a; border: 1px solid #cbd5e1; }
 
-    /* ETAPAS / STEP BY STEP */
-    .step-list {
-      list-style: none;
-      counter-reset: step-counter;
-      margin-top: 8px;
-      margin-bottom: 12px;
-    }
-
-    .step-item {
-      position: relative;
-      padding-left: 28px;
-      margin-bottom: 10px;
-      font-size: 9pt;
-      color: #334155;
-    }
-
-    .step-item::before {
-      counter-increment: step-counter;
-      content: counter(step-counter);
-      position: absolute;
-      left: 0;
-      top: 0px;
-      width: 20px;
-      height: 20px;
-      background: #0f172a;
-      color: #ffffff;
-      font-size: 8pt;
-      font-weight: 800;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      line-height: 20px;
-    }
-
-    .step-item strong {
-      color: #0f172a;
-    }
-
-    .tip-box {
-      background: #ecfdf5;
-      border: 1px solid #a7f3d0;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 8.5pt;
-      color: #065f46;
-      margin: 10px 0;
-    }
-
-    .tip-box strong {
-      color: #047857;
-    }
-
-    .alert-box {
-      background: #fff1f2;
-      border: 1px solid #fecdd3;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 8.5pt;
-      color: #9f1239;
-      margin: 10px 0;
-    }
-
-    .table-summary {
+    table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      margin-bottom: 14px;
+      margin: 12px 0;
       font-size: 8.5pt;
     }
 
-    .table-summary th, .table-summary td {
+    th, td {
       border: 1px solid #cbd5e1;
-      padding: 6px 10px;
+      padding: 6px 8px;
       text-align: left;
     }
 
-    .table-summary th {
+    th {
       background: #0f172a;
       color: #ffffff;
       font-weight: 700;
+      font-size: 8pt;
+      text-transform: uppercase;
     }
 
-    .table-summary tr:nth-child(even) {
+    tr:nth-child(even) td {
       background: #f8fafc;
+    }
+
+    .step-num {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      text-align: center;
+      background: #0f172a;
+      color: #ffffff;
+      border-radius: 50%;
+      font-size: 7.5pt;
+      font-weight: bold;
+      margin-right: 4px;
+    }
+
+    .code-pill {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-size: 8pt;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
     }
   </style>
 </head>
@@ -299,273 +270,212 @@
   <!-- CAPA -->
   <div class="cover-page">
     <div>
-      <div class="cover-badge">Documentação Oficial & Guia Operacional</div>
-      <div class="cover-title">SCOOBY <span>OS</span></div>
-      <div class="cover-subtitle">Manual do Usuário Passo a Passo por Cargo e Funções Operacionais</div>
-    </div>
-
-    <div>
-      <div style="font-size: 10pt; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Módulos & Perfis Detalhados:</div>
-      <div class="cover-roles">
-        <div class="role-tag">💼 1. Atendente (Recepção, WhatsApp & Balcão)</div>
-        <div class="role-tag">🔧 2. Técnico Especialista (Bancada & Peças)</div>
-        <div class="role-tag">📱 3. Técnico Celulares (Híbrido & Games)</div>
-        <div class="role-tag">🎓 4. Técnico Trainee (Em Treinamento)</div>
-        <div class="role-tag">🛡️ 5. Gerente de Oficina (Triagem & Kanban)</div>
-        <div class="role-tag">👑 6. Administrador Geral (Gestão & Faturamento)</div>
+      <span class="cover-badge">Manual Oficial de Operação</span>
+      <h1 class="cover-title">SCOOBY OS</h1>
+      <p class="cover-subtitle">Guia Passo a Passo por Cargo & Procedimentos Operacionais</p>
+      
+      <div class="cover-author">
+        <div class="cover-author-title">Desenvolvido por</div>
+        <div class="cover-author-name">Emanuel Carvalho</div>
       </div>
     </div>
 
     <div class="cover-footer">
-      <div><strong>Desenvolvido por Emanuel Carvalho</strong> • Scooby Assistência Técnica</div>
-      <div>Versão 2026.1 Enterprise • WebRTC • SQLite Seguro</div>
+      <div>
+        <p style="color: #94a3b8; font-size: 8.5pt; font-weight: 600;">Scooby Informática & Assistência Técnica</p>
+        <p style="color: #64748b; font-size: 8pt;">Suporte: (41) 3565-2008 • Versão 2.5</p>
+      </div>
+      <div class="cover-tag">
+        Atendentes • Técnicos • Trainees • Gerentes • Admins
+      </div>
     </div>
   </div>
 
-  <!-- PÁGINA 1: ATENDENTE -->
   <div class="page-break"></div>
+
+  <!-- PÁGINA 1: ATENDENTES & TÉCNICO ESPECIALISTA -->
   <div class="header-bar">
-    <div class="logo">SCOOBY <span>OS</span></div>
-    <div class="doc-title">Manual Operacional • Módulo 1</div>
+    <span class="header-title">Manual Scooby OS • Operação</span>
+    <span class="header-author-tag">Desenvolvido por Emanuel Carvalho</span>
   </div>
 
-  <h1>💼 Perfil: Atendente de Balcão & Recepção</h1>
-  <div class="section-desc">Responsável pela entrada de aparelhos, comunicação via WhatsApp com clientes, entrega e recebimento.</div>
+  <!-- ATENDENTE -->
+  <div class="card-box avoid-break">
+    <h2><span class="badge-role badge-atendente">Atendente</span> 1. Atendimento de Balcão & Recepção</h2>
+    <p><strong>Missão:</strong> Recepcionar o cliente, registrar o estado visual/fotos de entrada, aplicar prazos e manter a comunicação via WhatsApp.</p>
 
-  <h2>1. Como Abrir uma Nova Ordem de Serviço (Entrada do Cliente)</h2>
-  <div class="step-list">
-    <div class="step-item">
-      <strong>Acessar o Balcão:</strong> Faça login com seu usuário (ex: <code>guilherme</code>) e clique no botão superior <strong>"+ Nova Ordem de Serviço"</strong>.
-    </div>
-    <div class="step-item">
-      <strong>Dados do Cliente:</strong> Preencha o Nome Completo e Telefone / WhatsApp. <em>(Dica: O WhatsApp já formata automaticamente o link de mensagem).</em>
-    </div>
-    <div class="step-item">
-      <strong>Dados do Aparelho:</strong> Selecione o Tipo (<em>Notebook, Celular, PC Desktop, Console, Impressora</em>), Marca/Modelo e informe se deixou carregador ou outros acessórios.
-    </div>
-    <div class="step-item">
-      <strong>Queixa do Cliente:</strong> Descreva exatamente o que o cliente relatou (ex: <em>"Não liga após chuva", "Tela quebrada", "Desliga ao jogar"</em>).
-    </div>
-    <div class="step-item">
-      <strong>Padrão de Prazo de 3 Dias:</strong> O campo de previsão de entrega já vem automaticamente configurado para <strong>3 dias úteis</strong>. Se o cliente tiver pressa, clique no atalho <strong>`⚡ 1 dia`</strong> ou selecione outra data livremente no calendário.
-    </div>
-    <div class="step-item">
-      <strong>Salvar e Imprimir Via do Cliente:</strong> Clique em <strong>"Criar Ordem de Serviço"</strong>. O comprovante A4 com <strong>QR Code</strong> de rastreio aparecerá na tela pronto para impressão.
-    </div>
+    <h3>🚀 Procedimento Operacional:</h3>
+    <ol>
+      <li><strong>Abrir OS com Fotos de Entrada:</strong> Clique em <span class="code-pill">+ Nova Ordem de Serviço</span>, preencha Nome, WhatsApp e Modelo. Clique em <span class="code-pill">+ Tirar / Anexar Fotos</span> para registrar fotos de arranhões ou tela quebrada.</li>
+      <li><strong>Prazo Padrão (SLA 3 Dias):</strong> O sistema calcula 3 dias úteis automaticamente. Utilize os atalhos <span class="code-pill">1 dia</span>, <span class="code-pill">3 dias</span> ou <span class="code-pill">5 dias</span>.</li>
+      <li><strong>Impressão com QR Code:</strong> Imprima o comprovante do cliente contendo o QR Code de rastreio em tempo real.</li>
+      <li><strong>WhatsApp com 1 Clique:</strong> Abra a OS e clique em <span class="code-pill">📋 Enviar Orçamento</span>, <span class="code-pill">🎉 Avisar: Pronto!</span> ou <span class="code-pill">📦 Avisar Peça</span>.</li>
+      <li><strong>Edição / Exclusão:</strong> Atendentes têm permissão total para editar dados incorretos ou excluir OSs em caso de desistência no balcão.</li>
+    </ol>
   </div>
 
-  <h2>2. Disparo de WhatsApp com 1 Clique</h2>
-  <div class="card">
-    <div class="card-title">📱 Mensagens Rápidas pelo Balcão:</div>
-    <p>Ao abrir os detalhes de qualquer OS, utilize os botões rápidos de WhatsApp:</p>
-    <ul style="padding-left: 18px; font-size: 8.5pt; color: #334155; line-height: 1.6;">
-      <li><strong>📋 Enviar Orçamento:</strong> Dispara o laudo técnico e valor total para o cliente aprovar.</li>
-      <li><strong>🎉 Avisar Pronto:</strong> Informa que o equipamento foi finalizado e aguarda retirada no balcão.</li>
-      <li><strong>📦 Avisar Peça:</strong> Notifica o cliente que a peça do aparelho dele está em transporte.</li>
+  <!-- TÉCNICO ESPECIALISTA -->
+  <div class="card-box card-box-accent avoid-break">
+    <h2><span class="badge-role badge-tecnico">Técnico Especialista</span> 2. Bancada Técnica (Notebooks, PCs, Impressoras)</h2>
+    <p><strong>Missão:</strong> Diagnosticar defeitos, registrar tempo de trabalho, documentar evidências fotográficas e executar reparos.</p>
+
+    <h3>🚀 Procedimento Operacional:</h3>
+    <ol>
+      <li><strong>Minha Bancada & Cronômetro:</strong> Clique em <span class="code-pill">Bancada</span> na OS e aperte <span class="code-pill">▶ Iniciar Cronômetro</span> para registrar o tempo exato de serviço.</li>
+      <li><strong>Fotos & Evidências:</strong> Na seção de fotos da bancada, anexe imagens da placa, componentes trocados ou micro-soldas.</li>
+      <li><strong>Laudo e Mão de Obra com Autonomia:</strong> Digite o laudo ou use atalhos. Insira múltiplos serviços (ex: <em>Reparo de Placa R$ 250</em>, <em>Limpeza R$ 120</em>).</li>
+      <li><strong>Baixa de Peças:</strong> Selecione as peças do catálogo de estoque para calcular o custo e dar baixa no inventário.</li>
+      <li><strong>Finalização:</strong> Marque o checklist de qualidade e clique em <span class="code-pill">✅ Finalizar / Pronto</span>. O tempo trabalhado será salvo automaticamente.</li>
+    </ol>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- PÁGINA 2: CELULARES, TRAINEE & GERENTE -->
+  <div class="header-bar">
+    <span class="header-title">Manual Scooby OS • Operação</span>
+    <span class="header-author-tag">Desenvolvido por Emanuel Carvalho</span>
+  </div>
+
+  <!-- TÉCNICO CELULAR -->
+  <div class="card-box avoid-break">
+    <h2><span class="badge-role badge-celular">Técnico Celular</span> 3. Módulo Celulares & Consoles (Balcão Híbrido)</h2>
+    <p><strong>Missão:</strong> Atendimento rápido, micro-solda SMD, troca de telas, baterias e conectores.</p>
+    <ul>
+      <li><strong>Autoatribuição Imediata:</strong> No menu <em>Módulo Celulares</em>, abra a OS marcando <span class="code-pill">Iniciar atendimento imediatamente na minha bancada</span> para pular a triagem.</li>
+      <li><strong>Fotos Rápidas:</strong> Fotografe o aparelho na entrada e após o reparo para comprovação imediata ao cliente.</li>
     </ul>
   </div>
 
-  <h2>3. Autonomia de Edição e Exclusão</h2>
-  <div class="tip-box">
-    <strong>✏️ Edição & Exclusão:</strong> Caso tenha digitado algum dado incorreto no momento da entrada, o atendente pode clicar em <strong>"Editar OS"</strong> para corrigir qualquer campo, ou em <strong>"Excluir"</strong> caso o cliente desista no balcão.
-  </div>
-
-  <!-- PÁGINA 2: TÉCNICO ESPECIALISTA & TÉCNICO CELULARES -->
-  <div class="page-break"></div>
-  <div class="header-bar">
-    <div class="logo">SCOOBY <span>OS</span></div>
-    <div class="doc-title">Manual Operacional • Módulo 2 & 3</div>
-  </div>
-
-  <h1>🔧 Perfis: Técnico Especialista & Celulares Híbrido</h1>
-  <div class="section-desc">Responsável pela bancada, diagnóstico de circuitos, substituição de peças, controle de tempo e laudo final.</div>
-
-  <h2>1. Fluxo de Trabalho na Bancada</h2>
-  <div class="step-list">
-    <div class="step-item">
-      <strong>Acessar "Minha Bancada":</strong> Ao fazer login (ex: <code>emanuel</code> ou <code>roger</code>), o sistema abre diretamente na sua fila individual de aparelhos.
-    </div>
-    <div class="step-item">
-      <strong>Iniciar Cronômetro:</strong> Clique em <strong>"Bancada"</strong> no card do aparelho e aperte o botão <strong>`▶ Iniciar`</strong> do cronômetro para medir o tempo exato de reparo.
-    </div>
-    <div class="step-item">
-      <strong>Inserir Diagnóstico & Laudo:</strong> Descreva a falha encontrada na placa ou componentes. Você pode clicar nas sugestões rápidas (<em>ex: "+ Troca de Display", "+ Desoxidação em Ultrassom"</em>).
-    </div>
-    <div class="step-item">
-      <strong>Adicionar Serviços & Mão de Obra:</strong> Clique nos botões de atalho de serviços (<em>ex: "+ Troca de Conector R$ 90", "+ Limpeza R$ 120"</em>) ou digite qualquer serviço personalizado com valor livre.
-    </div>
-    <div class="step-item">
-      <strong>Puxar Peças do Estoque:</strong> Selecione a peça utilizada no menu suspenso do estoque para dar baixa automática ou cadastre uma peça avulsa.
-    </div>
-    <div class="step-item">
-      <strong>Aprovação ou Finalização:</strong>
-      <ul style="margin-top: 4px; padding-left: 14px;">
-        <li>Se precisar de aprovação do cliente: clique em <strong>"Enviar para Aprovação"</strong>.</li>
-        <li>Se já realizou o conserto: marque o Checklist de Saída e clique em <strong>"✅ Finalizar / Pronto"</strong>.</li>
-      </ul>
-    </div>
-  </div>
-
-  <h2>2. Reabertura de OS Finalizada</h2>
-  <div class="tip-box">
-    <strong>🔄 Reabrir Aparelhos:</strong> Se um aparelho finalizado precisar de novos testes ou ajustes, o técnico pode abrir a OS e clicar no botão <strong>`🔧 Bancada (Em Andamento)`</strong> ou <strong>`🧪 Testes Finais`</strong> para reabrir o chamado a qualquer momento.
-  </div>
-
-  <!-- PÁGINA 3: TRAINEE & GERENTE -->
-  <div class="page-break"></div>
-  <div class="header-bar">
-    <div class="logo">SCOOBY <span>OS</span></div>
-    <div class="doc-title">Manual Operacional • Módulo 4 & 5</div>
-  </div>
-
-  <h1>🎓 Perfil: Técnico Trainee (Em Treinamento)</h1>
-  <div class="section-desc">Voltado para novos técnicos e estagiários em capacitação prática supervisionada.</div>
-
-  <h2>Como o Trainee opera no sistema:</h2>
-  <div class="step-list">
-    <div class="step-item">
-      <strong>Acesso Híbrido à Bancada e Recepção:</strong> O Trainee tem permissão para acompanhar tanto a bancada técnica (<code>/tecnico</code>) quanto o balcão de atendimento (<code>/atendente</code>).
-    </div>
-    <div class="step-item">
-      <strong>Fila de Bancada Própria:</strong> O Trainee recebe ordens de serviço designadas pelo Gerente para tarefas de nível inicial (formatações, limpezas preventivas, trocas de conectores e testes).
-    </div>
-    <div class="step-item">
-      <strong>Tirar Dúvidas com Técnicos Sêniores:</strong> O Trainee pode abrir a gaveta de <strong>Chat da Equipe</strong> ou utilizar o <strong>Interfone de Voz</strong> para pedir orientação ao Emanuel, Roger ou Donizete sem sair da sua bancada.
-    </div>
-  </div>
-
-  <hr style="margin: 20px 0; border: 0; border-top: 1px dashed #cbd5e1;" />
-
-  <h1>🛡️ Perfil: Gerente de Oficina (Triagem & Kanban)</h1>
-  <div class="section-desc">Responsável pela gestão do fluxo, distribuição de cargas de trabalho e cumprimento de prazos (SLA).</div>
-
-  <h2>Operação do Painel Kanban:</h2>
-  <div class="step-list">
-    <div class="step-item">
-      <strong>Visão Geral da Oficina:</strong> O Kanban exibe em colunas dinâmicas todas as OSs divididas em: <em>Triagem, Bancada em Reparo, Aguardando Aprovação, Aguardando Peça, Testes de Qualidade e Prontos</em>.
-    </div>
-    <div class="step-item">
-      <strong>Atribuir Técnico com 1 Clique:</strong> Na coluna de Triagem, clique no ícone de <strong>"+ Atribuir Técnico"</strong> e selecione o técnico especialista ou trainee mais adequado para o tipo de serviço.
-    </div>
-    <div class="step-item">
-      <strong>Monitoramento de Prazos e Gargalos:</strong> Identifique cartões com alerta vermelho de SLA para priorizar aparelhos urgentes antes que vençam.
-    </div>
-  </div>
-
-  <!-- PÁGINA 4: ADMINISTRADOR GERAL & RECURSOS AVANÇADOS -->
-  <div class="page-break"></div>
-  <div class="header-bar">
-    <div class="logo">SCOOBY <span>OS</span></div>
-    <div class="doc-title">Manual Operacional • Módulo 6 & Ferramentas</div>
-  </div>
-
-  <h1>👑 Perfil: Administrador Geral</h1>
-  <div class="section-desc">Acesso total ao faturamento financeiro, lucros, gestão de equipe, estoque e segurança.</div>
-
-  <h2>1. Sigilo e Relatórios de Faturamento</h2>
-  <div class="card">
-    <div class="card-title">💰 Apuração Financeira Exclusiva (Apenas Admin):</div>
-    <p>Somente o perfil <strong>ADMIN</strong> tem acesso ao menu <strong>"Faturamento & Relatórios"</strong>:</p>
-    <ul style="padding-left: 18px; font-size: 8.5pt; color: #334155; line-height: 1.6;">
-      <li><strong>Faturamento Bruto Real:</strong> Valor total pago pelos clientes em serviços e peças.</li>
-      <li><strong>Custo Total de Peças:</strong> Subtração dos custos de reposição do estoque.</li>
-      <li><strong>Lucro Líquido Real & Margem %:</strong> Valor líquido real gerado para a oficina.</li>
-      <li><strong>Desempenho por Técnico:</strong> Quantidade de OSs concluídas por cada colaborador.</li>
+  <!-- TRAINEE -->
+  <div class="card-box card-box-gold avoid-break">
+    <h2><span class="badge-role badge-trainee">Trainee</span> 4. Técnico em Treinamento</h2>
+    <p><strong>Missão:</strong> Realizar procedimentos de nível inicial (formatação, limpeza, testes de estresse) sob supervisão técnica.</p>
+    <ul>
+      <li><strong>Crachá Dourado:</strong> O Trainee possui identificação visual própria na equipe.</li>
+      <li><strong>Acompanhamento de Tempo:</strong> Inicie o cronômetro para medir sua evolução e agilidade nos reparos.</li>
+      <li><strong>Dúvidas Técnicas:</strong> Utilize o <span class="code-pill">💬 Chat & Voz</span> para tirar dúvidas imediatas com técnicos seniores.</li>
     </ul>
   </div>
 
-  <h2>2. Gestão de Equipe & Usuários</h2>
-  <div class="step-list">
-    <div class="step-item">
-      Acesse o menu <strong>"Administração" ➔ "Gerenciar Usuários"</strong>.
-    </div>
-    <div class="step-item">
-      Cadastre novos colaboradores escolhendo o cargo (<em>Admin, Gerente, Atendente, Técnico, Técnico Celular ou Trainee</em>).
-    </div>
-    <div class="step-item">
-      Altere senhas de colaboradores ou redefina especialidades sempre que necessário.
-    </div>
-  </div>
-
-  <h2>3. Scooby Chat & Interfone de Voz (WebRTC)</h2>
-  <div class="card">
-    <div class="card-title">📞 Como usar a comunicação interna:</div>
-    <p>Clique no botão <strong>"💬 Chat & Voz"</strong> no canto superior direito de qualquer tela:</p>
-    <ul style="padding-left: 18px; font-size: 8.5pt; color: #334155; line-height: 1.6;">
-      <li><strong>Canais:</strong> `#GERAL` (toda a loja) e `#BANCADA` (técnicos e testes).</li>
-      <li><strong>Recados de Voz Gravados:</strong> Segure o botão de microfone para enviar áudios curtos.</li>
-      <li><strong>Ligação Direta por Voz:</strong> Clique no ícone de telefone ao lado do nome do colega. O computador dele emitirá o som de toque telefônico e iniciará a chamada de voz em tempo real.</li>
+  <!-- GERENTE -->
+  <div class="card-box avoid-break">
+    <h2><span class="badge-role badge-gerente">Gerente</span> 5. Triagem & Gestão Visual (Kanban)</h2>
+    <p><strong>Missão:</strong> Organizar a oficina, distribuir tarefas, cobrar prazos e auditar o fluxo de reparos.</p>
+    <ul>
+      <li><strong>Painel Kanban:</strong> Acesse <span class="code-pill">/gerente</span> para visualizar todas as OSs divididas por colunas de status.</li>
+      <li><strong>Atribuição Inteligente:</strong> Clique em <span class="code-pill">+ Atribuir</span> para direcionar cada equipamento ao especialista ou trainee adequado.</li>
+      <li><strong>Auditoria de Fotos e Tempo:</strong> Inspecione os laudos, tempos de bancada e evidências fotográficas antes da entrega.</li>
     </ul>
   </div>
 
-  <h2>4. Tabela Resumo de Permissões por Cargo</h2>
-  <table class="table-summary">
-    <thead>
-      <tr>
-        <th>Função / Módulo</th>
-        <th>Atendente</th>
-        <th>Trainee</th>
-        <th>Técnico</th>
-        <th>Gerente</th>
-        <th>Admin</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Abrir Novas Ordens de Serviço</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-      </tr>
-      <tr>
-        <td>Minha Bancada & Laudos Técnicos</td>
-        <td>❌ Não</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-      </tr>
-      <tr>
-        <td>Editar & Excluir OS</td>
-        <td>✅ Sim</td>
-        <td>❌ Não</td>
-        <td>❌ Não</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-      </tr>
-      <tr>
-        <td>Disparar Mensagens WhatsApp</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-        <td>✅ Sim</td>
-      </tr>
-      <tr>
-        <td>Visualizar Faturamento & Lucro Real</td>
-        <td>❌ Sigilo</td>
-        <td>❌ Sigilo</td>
-        <td>❌ Sigilo</td>
-        <td>❌ Sigilo</td>
-        <td>👑 Exclusivo</td>
-      </tr>
-      <tr>
-        <td>Gerenciar Usuários e Senhas</td>
-        <td>❌ Não</td>
-        <td>❌ Não</td>
-        <td>❌ Não</td>
-        <td>❌ Não</td>
-        <td>👑 Exclusivo</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="page-break"></div>
 
-  <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #cbd5e1; display: flex; justify-content: space-between; font-size: 8pt; color: #64748b;">
-    <div><strong>Desenvolvido por Emanuel Carvalho</strong> • Scooby Assistência Técnica</div>
-    <div>Todos os direitos reservados • 2026</div>
+  <!-- PÁGINA 3: ADMIN, QR CODE, TIMER & TABELA DE PERMISSÕES -->
+  <div class="header-bar">
+    <span class="header-title">Manual Scooby OS • Gestão & Permissões</span>
+    <span class="header-author-tag">Desenvolvido por Emanuel Carvalho</span>
   </div>
+
+  <!-- ADMIN & GESTÃO -->
+  <div class="card-box card-box-emerald avoid-break">
+    <h2><span class="badge-role badge-admin">Administrador</span> 6. Gestão Financeira, Estoque & Produtividade</h2>
+    <p><strong>Missão:</strong> Controle financeiro estratégico, faturamento em sigilo absoluto, gestão de equipe e infraestrutura.</p>
+    <ul>
+      <li><strong>Faturamento Sigiloso:</strong> Relatórios em <span class="code-pill">/admin/relatorios</span> com receita bruta, custo de peças e lucro líquido real.</li>
+      <li><strong>Auditoria de Tempo de Bancada:</strong> Veja nos detalhes de cada OS quanto tempo exato o técnico dedicou ao chamado.</li>
+      <li><strong>Estoque e Catálogo:</strong> Controle de quantidade mínima, preços de custo e margem de venda.</li>
+      <li><strong>Gestão de Usuários:</strong> Criação e alteração de perfis (Admin, Gerente, Atendente, Técnico, Trainee).</li>
+    </ul>
+  </div>
+
+  <!-- FOTOS & QR CODE -->
+  <div class="card-box avoid-break">
+    <h2>📸 7. Galeria de Fotos no QR Code do Cliente & Auditoria de Tempo ⏱️</h2>
+    <ul>
+      <li><strong>QR Code Público:</strong> O cliente aponta o celular para o QR Code da folha impressa e visualiza o andamento e a galeria de fotos do seu equipamento em alta definição.</li>
+      <li><strong>Auditoria de Minutagem:</strong> Cada segundo cronometrado na bancada é gravado no banco de dados e adicionado ao histórico oficial da OS.</li>
+    </ul>
+  </div>
+
+  <!-- TABELA DE PERMISSÕES -->
+  <div class="avoid-break">
+    <h2>📊 8. Tabela Geral de Permissões</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Recurso / Ação</th>
+          <th style="text-align: center;">Atendente</th>
+          <th style="text-align: center;">Trainee</th>
+          <th style="text-align: center;">Técnico</th>
+          <th style="text-align: center;">Gerente</th>
+          <th style="text-align: center;">Admin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Abrir OS (com Fotos de Entrada)</strong></td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+        </tr>
+        <tr>
+          <td><strong>Bancada Técnica & Cronômetro</strong></td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+        </tr>
+        <tr>
+          <td><strong>Editar e Excluir OSs</strong></td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+        </tr>
+        <tr>
+          <td><strong>Disparo de Mensagens WhatsApp</strong></td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+        </tr>
+        <tr>
+          <td><strong>Painel Kanban de Triagem</strong></td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+        </tr>
+        <tr>
+          <td><strong>Auditoria de Tempo de Bancada</strong></td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #dc2626;">Não</td>
+          <td style="text-align: center; color: #16a34a; font-weight: bold;">Sim</td>
+          <td style="text-align: center; color: #0284c7; font-weight: 900;">👑 Exclusivo</td>
+        </tr>
+        <tr>
+          <td><strong>Faturamento & Lucro Real</strong></td>
+          <td style="text-align: center; color: #94a3b8; font-style: italic;">Sigilo</td>
+          <td style="text-align: center; color: #94a3b8; font-style: italic;">Sigilo</td>
+          <td style="text-align: center; color: #94a3b8; font-style: italic;">Sigilo</td>
+          <td style="text-align: center; color: #94a3b8; font-style: italic;">Sigilo</td>
+          <td style="text-align: center; color: #0284c7; font-weight: 900;">👑 Exclusivo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="text-align: center; font-size: 8pt; color: #64748b; margin-top: 15px;">
+    Documento oficial desenvolvido por <strong>Emanuel Carvalho</strong> • Scooby Assistência Técnica
+  </p>
 
 </body>
 </html>
