@@ -33,6 +33,8 @@ export const getPublicOSByCode = async (req: Request, res: Response): Promise<vo
         status: true,
         prioridade: true,
         prazo_entrega: true,
+        fotos_equipamento: true,
+        tempo_bancada_segundos: true,
         createdAt: true,
         updatedAt: true,
         concluidoEm: true,

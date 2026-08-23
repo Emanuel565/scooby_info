@@ -16,7 +16,11 @@ import {
   Gamepad2, 
   HelpCircle,
   ShieldCheck,
-  Check
+  Check,
+  Camera,
+  Image,
+  Eye,
+  X
 } from 'lucide-react';
 
 export const PublicOSLookup: React.FC = () => {
@@ -25,6 +29,7 @@ export const PublicOSLookup: React.FC = () => {
   const [osData, setOsData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFoto, setSelectedFoto] = useState<string | null>(null);
 
   const fetchOS = async (codeToSearch: string) => {
     if (!codeToSearch.trim()) return;
@@ -295,6 +300,45 @@ export const PublicOSLookup: React.FC = () => {
                 </div>
               </div>
 
+              {/* Galeria de Fotos e Evidências do Equipamento */}
+              {(() => {
+                let fotosList: string[] = [];
+                try {
+                  fotosList = typeof osData.fotos_equipamento === 'string' ? JSON.parse(osData.fotos_equipamento || '[]') : osData.fotos_equipamento || [];
+                } catch {
+                  fotosList = [];
+                }
+
+                if (fotosList.length === 0) return null;
+
+                return (
+                  <div className="p-4 rounded-2xl bg-slate-950/70 border border-white/10 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Camera className="w-4 h-4 text-sky-400" />
+                      <h4 className="font-bold text-white text-xs uppercase tracking-wider">
+                        Fotos & Evidências do Equipamento ({fotosList.length})
+                      </h4>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+                      {fotosList.map((f, i) => (
+                        <div 
+                          key={i} 
+                          onClick={() => setSelectedFoto(f)}
+                          className="relative group rounded-xl overflow-hidden border border-white/10 aspect-square bg-black/40 cursor-pointer"
+                        >
+                          <img src={f} alt={`Evidência ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <span className="p-1.5 rounded-lg bg-black/60 text-white text-[10px] font-bold flex items-center gap-1">
+                              <Eye className="w-3.5 h-3.5" /> Ampliar
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* Botão de Contato Direto */}
               <div className="pt-2">
                 <a
@@ -310,6 +354,29 @@ export const PublicOSLookup: React.FC = () => {
 
             </div>
 
+          </div>
+        )}
+
+        {/* Modal Lightbox de Foto Ampliada */}
+        {selectedFoto && (
+          <div 
+            className="fixed inset-0 z-60 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+            onClick={() => setSelectedFoto(null)}
+          >
+            <div className="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
+              <img 
+                src={selectedFoto} 
+                alt="Foto do Equipamento Ampliada" 
+                className="max-w-full max-h-[85vh] object-contain rounded-2xl border border-white/20 shadow-2xl" 
+              />
+              <button
+                type="button"
+                onClick={() => setSelectedFoto(null)}
+                className="absolute top-3 right-3 p-2 rounded-full bg-black/70 hover:bg-rose-600 text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         )}
 

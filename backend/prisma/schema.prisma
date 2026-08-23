@@ -69,6 +69,7 @@ model OrdemServico {
   pecas_utilizadas         String?        @default("[]") // JSON array de pecas { id, nome, quantidade, preco_custo, preco_venda, preco }
   checklist_entrada        String?        @default("{}") // JSON checklist
   checklist_saida          String?        @default("{}") // JSON checklist de saida
+  fotos_equipamento        String?        @default("[]") // JSON array de fotos/evidências do equipamento
   
   orcamento_valor          Float          @default(0) // Mão de obra
   valor_final              Float          @default(0) // Total cobrado do cliente

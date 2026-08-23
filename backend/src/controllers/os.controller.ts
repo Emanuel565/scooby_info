@@ -43,6 +43,7 @@ export const createOS = async (req: AuthRequest, res: Response): Promise<void> =
       prioridade,
       prazo_entrega,
       checklist_entrada,
+      fotos_equipamento,
       auto_atribuir_me
     } = req.body;
 
@@ -81,6 +82,7 @@ export const createOS = async (req: AuthRequest, res: Response): Promise<void> =
         prazo_entrega: prazo_entrega ? new Date(prazo_entrega) : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         checklist_entrada: JSON.stringify(checklist_entrada || {}),
         checklist_saida: JSON.stringify({}),
+        fotos_equipamento: typeof fotos_equipamento === 'string' ? fotos_equipamento : JSON.stringify(fotos_equipamento || []),
         status: statusInicial,
         tecnico_id: tecnicoId,
         criado_por_id: req.user.id
@@ -424,7 +426,8 @@ export const updateLaudoAndParts = async (req: AuthRequest, res: Response): Prom
       orcamento_valor,
       valor_final,
       tempo_bancada_segundos,
-      checklist_saida
+      checklist_saida,
+      fotos_equipamento
     } = req.body;
 
     const pecasArray = pecas_utilizadas || [];
@@ -434,18 +437,24 @@ export const updateLaudoAndParts = async (req: AuthRequest, res: Response): Prom
     const valorTotalCalculado = valor_final !== undefined ? parseFloat(valor_final) : (maoDeObra + vendaPecas);
     const lucroLiquidoCalculado = Math.max(0, valorTotalCalculado - custoPecas);
 
+    const updateData: any = {
+      laudo_tecnico: laudo_tecnico || null,
+      pecas_utilizadas: JSON.stringify(pecasArray),
+      orcamento_valor: maoDeObra,
+      valor_final: valorTotalCalculado,
+      custo_pecas: custoPecas,
+      lucro_liquido: lucroLiquidoCalculado,
+      tempo_bancada_segundos: tempo_bancada_segundos !== undefined ? Number(tempo_bancada_segundos) : undefined,
+      checklist_saida: checklist_saida ? JSON.stringify(checklist_saida) : undefined
+    };
+
+    if (fotos_equipamento !== undefined) {
+      updateData.fotos_equipamento = typeof fotos_equipamento === 'string' ? fotos_equipamento : JSON.stringify(fotos_equipamento);
+    }
+
     const updatedOS = await prisma.ordemServico.update({
       where: { id: Number(id) },
-      data: {
-        laudo_tecnico: laudo_tecnico || null,
-        pecas_utilizadas: JSON.stringify(pecasArray),
-        orcamento_valor: maoDeObra,
-        valor_final: valorTotalCalculado,
-        custo_pecas: custoPecas,
-        lucro_liquido: lucroLiquidoCalculado,
-        tempo_bancada_segundos: tempo_bancada_segundos !== undefined ? Number(tempo_bancada_segundos) : undefined,
-        checklist_saida: checklist_saida ? JSON.stringify(checklist_saida) : undefined
-      },
+      data: updateData,
       include: {
         tecnico: { select: { id: true, nome: true, login: true, cargo: true } },
         criado_por: { select: { id: true, nome: true, login: true, cargo: true } },
@@ -454,12 +463,16 @@ export const updateLaudoAndParts = async (req: AuthRequest, res: Response): Prom
       }
     });
 
+    const tempoSeg = Number(tempo_bancada_segundos) || 0;
+    const tempoMin = Math.round(tempoSeg / 60);
+    const tempoTxt = tempoMin >= 60 ? `${Math.floor(tempoMin / 60)}h ${tempoMin % 60}m` : `${tempoMin} min (${tempoSeg}s)`;
+
     await prisma.logHistorico.create({
       data: {
         os_id: updatedOS.id,
         usuario_id: req.user.id,
         acao: 'LAUDO_ATUALIZADO',
-        descricao: `Laudo técnico e peças atualizados por ${req.user.nome}. Total OS: R$ ${updatedOS.valor_final} (Custo Peças: R$ ${updatedOS.custo_pecas} | Lucro: R$ ${updatedOS.lucro_liquido})`
+        descricao: `Laudo e bancada atualizados por ${req.user.nome}. Tempo de bancada registrado: ${tempoTxt}. Total: R$ ${updatedOS.valor_final} (Peças: R$ ${updatedOS.custo_pecas} | Lucro: R$ ${updatedOS.lucro_liquido})`
       }
     });
 

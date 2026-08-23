@@ -22,7 +22,10 @@ import {
   Save,
   Check,
   RotateCcw,
-  CheckCircle
+  CheckCircle,
+  Camera,
+  Image,
+  Eye
 } from 'lucide-react';
 
 interface OSDetailsModalProps {
@@ -34,11 +37,65 @@ interface OSDetailsModalProps {
 
 export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onOpenPrint, onRefresh }) => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'geral' | 'laudo' | 'historico'>('geral');
+  const [activeTab, setActiveTab] = useState<'geral' | 'laudo' | 'fotos' | 'historico'>('geral');
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
+
+  let initialFotos: string[] = [];
+  try {
+    initialFotos = typeof os?.fotos_equipamento === 'string' ? JSON.parse(os?.fotos_equipamento || '[]') : os?.fotos_equipamento || [];
+  } catch {}
+  const [fotos, setFotos] = useState<string[]>(initialFotos);
+  const [previewFoto, setPreviewFoto] = useState<string | null>(null);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !os) return;
+
+    const newFotos = [...fotos];
+    for (const file of Array.from(files)) {
+      const base64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.readAsDataURL(file);
+      });
+      newFotos.push(base64);
+    }
+    setFotos(newFotos);
+
+    try {
+      await fetch(`/api/os/${os.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('scooby_token')}`
+        },
+        body: JSON.stringify({ fotos_equipamento: newFotos })
+      });
+      if (onRefresh) onRefresh();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRemoveFoto = async (idx: number) => {
+    if (!os) return;
+    const newFotos = fotos.filter((_, i) => i !== idx);
+    setFotos(newFotos);
+    try {
+      await fetch(`/api/os/${os.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('scooby_token')}`
+        },
+        body: JSON.stringify({ fotos_equipamento: newFotos })
+      });
+      if (onRefresh) onRefresh();
+    } catch (err) {}
+  };
 
   // Estados de Edição
   const [editNome, setEditNome] = useState(os?.cliente_nome || '');
@@ -526,6 +583,13 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
                   Laudo & Peças ({pecasList.length})
                 </button>
                 <button
+                  onClick={() => setActiveTab('fotos')}
+                  className={`pb-3 text-xs font-semibold flex items-center gap-1.5 border-b-2 transition-colors cursor-pointer ${activeTab === 'fotos' ? 'border-brand-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
+                >
+                  <Camera className="w-4 h-4" />
+                  Fotos & Evidências ({fotos.length})
+                </button>
+                <button
                   onClick={() => setActiveTab('historico')}
                   className={`pb-3 text-xs font-semibold flex items-center gap-1.5 border-b-2 transition-colors cursor-pointer ${activeTab === 'historico' ? 'border-brand-500 text-white' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
                 >
@@ -742,6 +806,32 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
                     </div>
                   </div>
 
+                  {/* Banner de Tempo Trabalhado em Bancada (Visão de Gestão & Técnico) */}
+                  <div className="p-3.5 rounded-2xl bg-gradient-to-r from-slate-950 via-navy-950 to-slate-950 border border-brand-500/30 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-brand-500/20 text-brand-300">
+                        <Clock className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-white text-xs block">
+                          Tempo Trabalhado na Bancada Técnica
+                        </span>
+                        <span className="text-[11px] text-slate-400">
+                          Técnico: <strong className="text-brand-300">{os.tecnico ? os.tecnico.nome : 'Não atribuído'}</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="font-mono font-black text-base text-brand-300 px-3 py-1 rounded-xl bg-brand-500/10 border border-brand-500/30">
+                        {formatTimeSeconds(os.tempo_bancada_segundos || 0)}
+                      </span>
+                      <span className="text-[10.5px] text-slate-400 block mt-0.5">
+                        {Math.round((os.tempo_bancada_segundos || 0) / 60)} min trabalhados
+                      </span>
+                    </div>
+                  </div>
+
                 </div>
               )}
 
@@ -773,6 +863,75 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
                       </div>
                     )}
                   </div>
+                </div>
+              )}
+
+              {activeTab === 'fotos' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-950/60 border border-white/5">
+                    <div>
+                      <h4 className="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
+                        <Camera className="w-4 h-4 text-sky-400" />
+                        Galeria de Fotos do Equipamento ({fotos.length})
+                      </h4>
+                      <p className="text-[11px] text-slate-400">
+                        Fotos de entrada, laudo e peças que também são visíveis pelo cliente ao ler o QR Code
+                      </p>
+                    </div>
+
+                    <label className="px-3 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all">
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>+ Anexar Fotos</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        capture="environment"
+                        onChange={handlePhotoUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  {fotos.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                      {fotos.map((f, idx) => (
+                        <div key={idx} className="relative group rounded-xl overflow-hidden border border-white/10 aspect-square bg-black/40">
+                          <img 
+                            src={f} 
+                            alt={`Evidência ${idx + 1}`} 
+                            className="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform"
+                            onClick={() => setPreviewFoto(f)}
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1.5 transition-opacity">
+                            <button
+                              type="button"
+                              onClick={() => setPreviewFoto(f)}
+                              className="p-1.5 rounded-lg bg-black/70 text-white hover:bg-brand-500 transition-colors"
+                              title="Ampliar Foto"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            {canEditOrDelete && (
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveFoto(idx)}
+                                className="p-1.5 rounded-lg bg-rose-950/80 text-rose-300 hover:bg-rose-600 hover:text-white transition-colors"
+                                title="Excluir Foto"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-8 rounded-2xl border border-dashed border-white/10 text-center text-slate-500 text-xs flex flex-col items-center justify-center gap-2">
+                      <Image className="w-8 h-8 text-slate-600" />
+                      <span>Nenhuma foto anexada a esta OS. Clique no botão <strong>+ Anexar Fotos</strong> para enviar imagens do aparelho.</span>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -813,6 +972,29 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
 
             </div>
           </>
+        )}
+
+        {/* Modal Lightbox de Foto Ampliada */}
+        {previewFoto && (
+          <div 
+            className="fixed inset-0 z-60 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+            onClick={() => setPreviewFoto(null)}
+          >
+            <div className="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
+              <img 
+                src={previewFoto} 
+                alt="Foto Ampliada" 
+                className="max-w-full max-h-[85vh] object-contain rounded-2xl border border-white/20 shadow-2xl" 
+              />
+              <button
+                type="button"
+                onClick={() => setPreviewFoto(null)}
+                className="absolute top-3 right-3 p-2 rounded-full bg-black/70 hover:bg-rose-600 text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
         )}
 
       </div>

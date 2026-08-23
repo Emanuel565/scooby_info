@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { PlusCircle, X, CheckSquare, Laptop, Smartphone, Monitor, Gamepad2, Printer, ShieldAlert, FileSearch, Calendar } from 'lucide-react';
+import { PlusCircle, X, CheckSquare, Laptop, Smartphone, Monitor, Gamepad2, Printer, ShieldAlert, FileSearch, Calendar, Camera, Image, Trash2 } from 'lucide-react';
 
 interface NewOSModalProps {
   isOpen: boolean;
@@ -31,6 +31,26 @@ export const NewOSModal: React.FC<NewOSModalProps> = ({
   const [senhaAparelho, setSenhaAparelho] = useState('');
   const [acessorios, setAcessorios] = useState('');
   const [condicoesVisuais, setCondicoesVisuais] = useState('');
+  const [fotos, setFotos] = useState<string[]>([]);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFotos(prev => [...prev, String(event.target?.result)]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleRemoveFoto = (index: number) => {
+    setFotos(prev => prev.filter((_, i) => i !== index));
+  };
 
   const getPrazoPreset = (days: number) => {
     const d = new Date();
@@ -120,6 +140,7 @@ export const NewOSModal: React.FC<NewOSModalProps> = ({
           prioridade,
           prazo_entrega: prazoEntrega || null,
           checklist_entrada: checklist,
+          fotos_equipamento: fotos,
           auto_atribuir_me: autoAtribuir
         })
       });
@@ -320,6 +341,46 @@ export const NewOSModal: React.FC<NewOSModalProps> = ({
                 onChange={(e) => setCondicoesVisuais(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-white placeholder-slate-600 focus:border-brand-500 focus:outline-none"
               />
+            </div>
+
+            {/* Fotos de Entrada / Evidências */}
+            <div className="p-3 rounded-xl bg-slate-950/60 border border-white/5 space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-slate-300 font-medium flex items-center gap-1.5 text-xs">
+                  <Camera className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Fotos de Entrada do Equipamento (Opcional - {fotos.length})</span>
+                </label>
+                <label className="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/30 text-[11px] font-semibold flex items-center gap-1 cursor-pointer transition-all">
+                  <Camera className="w-3 h-3" />
+                  <span>+ Tirar / Anexar Fotos</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    capture="environment"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              {fotos.length > 0 && (
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-1">
+                  {fotos.map((f, i) => (
+                    <div key={i} className="relative group rounded-lg overflow-hidden border border-white/10 aspect-square bg-black/40">
+                      <img src={f} alt={`Entrada ${i + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFoto(i)}
+                        className="absolute top-1 right-1 p-1 rounded-md bg-rose-950/90 text-rose-300 hover:bg-rose-600 hover:text-white transition-colors"
+                        title="Remover"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

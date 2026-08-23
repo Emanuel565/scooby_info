@@ -81,6 +81,7 @@ export interface OrdemServico {
   pecas_utilizadas?: string | PecaItem[];
   checklist_entrada?: string | Record<string, boolean>;
   checklist_saida?: string | Record<string, boolean>;
+  fotos_equipamento?: string | string[];
   
   orcamento_valor: number;
   valor_final: number;

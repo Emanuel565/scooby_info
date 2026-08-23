@@ -17,7 +17,10 @@ import {
   DollarSign,
   Wrench,
   Sparkles,
-  Layers
+  Layers,
+  Camera,
+  Image,
+  Eye
 } from 'lucide-react';
 
 interface ServicoItem {
@@ -81,8 +84,36 @@ export const TechnicianBenchModal: React.FC<TechnicianBenchModalProps> = ({
     lacre_garantia_aplicado: true
   });
 
+  let initialFotos: string[] = [];
+  try {
+    initialFotos = typeof os.fotos_equipamento === 'string' ? JSON.parse(os.fotos_equipamento || '[]') : os.fotos_equipamento || [];
+  } catch {
+    initialFotos = [];
+  }
+  const [fotos, setFotos] = useState<string[]>(initialFotos);
+  const [previewFoto, setPreviewFoto] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFotos(prev => [...prev, String(event.target?.result)]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleRemoveFoto = (index: number) => {
+    setFotos(prev => prev.filter((_, i) => i !== index));
+  };
 
   // Carrega itens do estoque para o dropdown
   useEffect(() => {
@@ -210,7 +241,8 @@ export const TechnicianBenchModal: React.FC<TechnicianBenchModalProps> = ({
           orcamento_valor: totalMaoDeObra,
           valor_final: valorTotalFinal,
           tempo_bancada_segundos: seconds,
-          checklist_saida: checklistSaida
+          checklist_saida: checklistSaida,
+          fotos_equipamento: fotos
         })
       });
 
@@ -614,6 +646,72 @@ export const TechnicianBenchModal: React.FC<TechnicianBenchModalProps> = ({
             </div>
           </div>
 
+          {/* FOTOS & EVIDÊNCIAS DO EQUIPAMENTO (APARELHO / PLACA / ANTES E DEPOIS) */}
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-white/10 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
+                  <Camera className="w-4 h-4 text-sky-400" />
+                  Fotos & Evidências do Aparelho ({fotos.length})
+                </h4>
+                <span className="text-[11px] text-slate-400">
+                  Anexe fotos de entrada, peças danificadas, micro-soldas ou comprovantes para o cliente e relatório
+                </span>
+              </div>
+
+              <label className="px-3 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all">
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ Adicionar Fotos</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  capture="environment"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
+            {fotos.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5 pt-1">
+                {fotos.map((f, idx) => (
+                  <div key={idx} className="relative group rounded-xl overflow-hidden border border-white/10 aspect-square bg-black/40">
+                    <img 
+                      src={f} 
+                      alt={`Evidência ${idx + 1}`} 
+                      className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform"
+                      onClick={() => setPreviewFoto(f)}
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1 transition-opacity pointer-events-none">
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setPreviewFoto(f); }}
+                        className="p-1 rounded-lg bg-black/60 text-white pointer-events-auto hover:bg-brand-500"
+                        title="Ampliar"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); handleRemoveFoto(idx); }}
+                        className="p-1 rounded-lg bg-rose-950/80 text-rose-300 pointer-events-auto hover:bg-rose-600 hover:text-white"
+                        title="Remover Foto"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl border border-dashed border-white/10 text-center text-slate-500 text-xs flex flex-col items-center justify-center gap-1">
+                <Image className="w-6 h-6 text-slate-600" />
+                <span>Nenhuma foto anexada ainda. Clique em <strong>+ Adicionar Fotos</strong> para anexar imagens da câmera ou galeria.</span>
+              </div>
+            )}
+          </div>
+
           {/* Checklist de Saída & Qualidade */}
           <div className="p-4 rounded-2xl bg-slate-950/60 border border-white/5 space-y-2">
             <h4 className="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
@@ -715,6 +813,29 @@ export const TechnicianBenchModal: React.FC<TechnicianBenchModalProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Modal Lightbox de Foto Ampliada */}
+        {previewFoto && (
+          <div 
+            className="fixed inset-0 z-60 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+            onClick={() => setPreviewFoto(null)}
+          >
+            <div className="relative max-w-4xl max-h-[90vh] flex flex-col items-center">
+              <img 
+                src={previewFoto} 
+                alt="Foto Ampliada" 
+                className="max-w-full max-h-[85vh] object-contain rounded-2xl border border-white/20 shadow-2xl" 
+              />
+              <button
+                type="button"
+                onClick={() => setPreviewFoto(null)}
+                className="absolute top-3 right-3 p-2 rounded-full bg-black/70 hover:bg-rose-600 text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
