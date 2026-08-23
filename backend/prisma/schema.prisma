@@ -43,6 +43,9 @@ model ItemEstoque {
   localizacao     String?  // Gaveta A1, Prateleira 2
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([categoria])
+  @@index([nome])
 }
 
 model OrdemServico {
@@ -97,6 +100,13 @@ model OrdemServico {
 
   logs                     LogHistorico[]
   mensagens_chat           MensagemChat[]
+
+  @@index([status])
+  @@index([tecnico_id])
+  @@index([criado_por_id])
+  @@index([createdAt])
+  @@index([prazo_entrega])
+  @@index([cliente_nome])
 }
 
 model LogHistorico {
@@ -110,6 +120,9 @@ model LogHistorico {
   status_anterior String?
   status_novo     String?
   createdAt       DateTime     @default(now())
+
+  @@index([os_id])
+  @@index([createdAt])
 }
 
 model Notificacao {
@@ -122,6 +135,8 @@ model Notificacao {
   os_id       Int?
   lida        Boolean  @default(false)
   createdAt   DateTime @default(now())
+
+  @@index([usuario_id])
 }
 
 model MensagemChat {
@@ -139,4 +154,9 @@ model MensagemChat {
   os              OrdemServico? @relation(fields: [os_id], references: [id], onDelete: SetNull)
   lida            Boolean       @default(false)
   createdAt       DateTime      @default(now())
+
+  @@index([canal])
+  @@index([createdAt])
+  @@index([remetente_id])
+  @@index([destinatario_id])
 }
