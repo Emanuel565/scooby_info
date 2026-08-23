@@ -39,7 +39,14 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
    * **Prazo Automático de 3 Dias:** O sistema já preenche a data para 3 dias úteis. Use os atalhos `⚡ 1 dia`, `⭐ 3 dias`, `🔧 5 dias` ou escolha qualquer data personalizada.
    * Clique em **"Criar Ordem de Serviço"** e imprima a via do cliente com o **QR Code** de rastreio.
 
-2. **Enviar Mensagens de WhatsApp:**
+2. **🛒 Efetuar Vendas Diretas no Balcão (PDV):**
+   * Clique em **`Venda Balcão (PDV)`** no topo da tela.
+   * Selecione qualquer produto cadastrado (SSDs, memórias, cabos, carregadores, notebooks usados revisados, etc.).
+   * Filtre por **✨ Produtos Novos** ou **🏷️ Usados / Seminovos**.
+   * Escolha a forma de pagamento (**Dinheiro com cálculo de troco, PIX, Cartão Débito ou Crédito**).
+   * Clique em **"Finalizar Venda & Imprimir"** para emitir o comprovante térmico (com termo de garantia) e enviar por WhatsApp.
+
+3. **Enviar Mensagens de WhatsApp:**
    * Clique em qualquer OS para abrir os detalhes.
    * Utilize os botões com 1 clique:
      * `📋 Enviar Orçamento` (Dispara laudo e valor aprovado)
@@ -47,7 +54,7 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
      * `📦 Avisar Peça` (Informa que a peça está em trânsito)
      * `🧪 Avisar Testes` (Informa que o aparelho está na fase final de testes)
 
-3. **Editar ou Excluir OS:**
+4. **Editar ou Excluir OS:**
    * Se cometeu algum erro na digitação, clique em **"Editar OS"** para alterar cliente, modelo, defeito ou valores.
    * Se o cliente desistir no balcão antes do início, clique em **"Excluir"**.
 
@@ -185,7 +192,33 @@ O Scooby OS conta com um sistema de registro fotográfico integrado:
 
 ---
 
-## 📊 10. Tabela Resumo de Permissões
+## 🛒 10. Ponto de Venda Balcão (PDV) & Produtos Novos e Usados
+
+O Scooby OS conta com um módulo de PDV de alta performance:
+
+1. **Venda Direta Sem Necessidade de OS:**
+   * Indicado para vendas rápidas de balcão (carregadores, cabos, SSDs, memórias, periféricos e notebooks seminovos).
+2. **Controle de Produtos Novos e Usados:**
+   * **✨ Novos:** Produtos lacrados com garantia integral.
+   * **🏷️ Usados / Seminovos:** Equipamentos revisados (Notebooks, Placas-mãe, Placas de Vídeo) com rastreamento por **Nº de Série / IMEI**, detalhes estéticos e garantia legal de 90 dias.
+3. **Emissão de Comprovante & Envio por WhatsApp:**
+   * Impressão de cupom térmico não fiscal (80mm) ou A4 com termo de garantia.
+   * Botão com 1 clique para disparar o resumo da compra diretamente no WhatsApp do cliente.
+
+---
+
+## 📊 11. Importação e Exportação de Planilhas Excel (.xlsx / .csv)
+
+1. **Migração em Massa de Produtos:**
+   * No menu **Estoque & Peças**, clique em **`📥 Importar Excel / CSV`**.
+   * Selecione a planilha da sua loja anterior. O sistema mapeia automaticamente *Nome, Categoria, Condição, Quantidade, Custo, Venda e Localização*.
+   * Visualize a tabela prévia antes de confirmar a importação para o banco de dados.
+2. **Exportação de Inventário Completo:**
+   * Clique em **`📤 Exportar Excel`** para baixar a qualquer momento o arquivo `.xlsx` completo para balanço financeiro e contabilidade.
+
+---
+
+## 📋 12. Tabela Resumo de Permissões
 
 | Funcionalidade | Atendente | Trainee | Técnico | Gerente | Admin |
 | :--- | :---: | :---: | :---: | :---: | :---: |

@@ -108,6 +108,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat, unreadChatCount }) =
               </Link>
             )}
 
+            {/* Venda Balcão / PDV para todos os atendentes e técnicos */}
+            <Link
+              to="/pdv"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${location.pathname === '/pdv' ? 'bg-emerald-600 text-white shadow-md' : 'bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 border border-emerald-500/30'}`}
+            >
+              <Package className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Venda Balcão (PDV)</span>
+            </Link>
+
             {(user.cargo === 'ADMIN' || user.cargo === 'TECNICO' || user.cargo === 'GERENTE' || user.cargo === 'TECNICO_CELULAR' || user.cargo === 'TRAINEE') && (
               <Link
                 to="/tecnico"

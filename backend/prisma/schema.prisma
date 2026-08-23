@@ -29,23 +29,31 @@ model Usuario {
   notificacoes        Notificacao[]
   mensagens_enviadas  MensagemChat[] @relation("MensagensEnviadas")
   mensagens_recebidas MensagemChat[] @relation("MensagensRecebidas")
+  vendas_realizadas   Venda[]        @relation("VendedorVenda")
 }
 
 model ItemEstoque {
-  id              Int      @id @default(autoincrement())
-  nome            String   // ex: SSD Kingston 240GB Sata III
-  categoria       String   // SSD, MEMORIA, TELA, BATERIA, CONECTOR, CABO, INSUMO, OUTRO
-  quantidade      Int      @default(0)
-  estoque_minimo  Int      @default(2)
-  preco_custo     Float    @default(0) // ex: R$ 150.00
-  preco_venda     Float    @default(0) // ex: R$ 300.00
-  codigo_barras   String?
-  localizacao     String?  // Gaveta A1, Prateleira 2
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  nome              String   // ex: SSD Kingston 240GB Sata III ou Notebook Dell Core i5 Usado
+  categoria         String   // NOTEBOOK, PC_DESKTOP, PLACA_MAE, MEMORIA, SSD, TELA, BATERIA, CARREGADOR, CELULAR, CONSOLE, ACESSORIO, INSUMO, OUTRO
+  condicao          String   @default("NOVO") // NOVO, USADO, SEMINOVO
+  quantidade        Int      @default(0)
+  estoque_minimo    Int      @default(2)
+  preco_custo       Float    @default(0) // ex: R$ 150.00
+  preco_venda       Float    @default(0) // ex: R$ 300.00
+  codigo_barras     String?
+  numero_serie      String?  // Serial / IMEI do aparelho ou componente (especialmente para usados)
+  garantia_meses    Int      @default(3) // 3 meses (90 dias) padrão de garantia
+  detalhes_condicao String?  // Marcas de uso, saúde da bateria %, detalhes estéticos
+  localizacao       String?  // Gaveta A1, Vitrine 1, Prateleira 2
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  itens_venda       ItemVenda[]
 
   @@index([categoria])
   @@index([nome])
+  @@index([condicao])
 }
 
 model OrdemServico {
@@ -160,4 +168,51 @@ model MensagemChat {
   @@index([createdAt])
   @@index([remetente_id])
   @@index([destinatario_id])
+}
+
+model Venda {
+  id                Int         @id @default(autoincrement())
+  codigo_venda      String      @unique // ex: V-2026-0001
+  cliente_nome      String?     @default("Cliente Balcão")
+  cliente_telefone  String?
+  cliente_documento String?
+  forma_pagamento   String      @default("DINHEIRO") // DINHEIRO, PIX, CARTAO_DEBITO, CARTAO_CREDITO, OUTRO
+  valor_total       Float       @default(0)
+  custo_total       Float       @default(0)
+  lucro_total       Float       @default(0)
+  desconto          Float       @default(0)
+  troco_para        Float?
+  troco_devolvido   Float?
+  observacao        String?
+
+  vendedor_id       Int
+  vendedor          Usuario     @relation("VendedorVenda", fields: [vendedor_id], references: [id])
+
+  itens             ItemVenda[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([vendedor_id])
+  @@index([createdAt])
+  @@index([forma_pagamento])
+}
+
+model ItemVenda {
+  id                Int          @id @default(autoincrement())
+  venda_id          Int
+  venda             Venda        @relation(fields: [venda_id], references: [id], onDelete: Cascade)
+  estoque_item_id   Int?
+  estoque_item      ItemEstoque? @relation(fields: [estoque_item_id], references: [id], onDelete: SetNull)
+  nome_produto      String
+  condicao          String       @default("NOVO") // NOVO, USADO, SEMINOVO
+  numero_serie      String?
+  garantia_meses    Int          @default(3)
+  quantidade        Int          @default(1)
+  preco_custo       Float        @default(0)
+  preco_unitario    Float        @default(0)
+  subtotal          Float        @default(0)
+  lucro_item        Float        @default(0)
+
+  @@index([venda_id])
+  @@index([estoque_item_id])
 }

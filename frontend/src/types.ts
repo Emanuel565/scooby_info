@@ -123,3 +123,61 @@ export interface Notificacao {
   lida: boolean;
   createdAt: string;
 }
+
+export type CondicaoProduto = 'NOVO' | 'USADO' | 'SEMINOVO';
+
+export interface ItemEstoque {
+  id: number;
+  nome: string;
+  categoria: string;
+  condicao: CondicaoProduto;
+  quantidade: number;
+  estoque_minimo: number;
+  preco_custo: number;
+  preco_venda: number;
+  codigo_barras?: string;
+  numero_serie?: string;
+  garantia_meses: number;
+  detalhes_condicao?: string;
+  localizacao?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type FormaPagamento = 'DINHEIRO' | 'PIX' | 'CARTAO_DEBITO' | 'CARTAO_CREDITO' | 'OUTRO';
+
+export interface ItemVenda {
+  id?: number;
+  venda_id?: number;
+  estoque_item_id?: number;
+  nome_produto: string;
+  condicao: CondicaoProduto;
+  numero_serie?: string;
+  garantia_meses: number;
+  quantidade: number;
+  preco_custo: number;
+  preco_unitario: number;
+  subtotal: number;
+  lucro_item: number;
+}
+
+export interface Venda {
+  id: number;
+  codigo_venda: string;
+  cliente_nome?: string;
+  cliente_telefone?: string;
+  cliente_documento?: string;
+  forma_pagamento: FormaPagamento;
+  valor_total: number;
+  custo_total: number;
+  lucro_total: number;
+  desconto: number;
+  troco_para?: number;
+  troco_devolvido?: number;
+  observacao?: string;
+  vendedor_id: number;
+  vendedor?: User;
+  itens: ItemVenda[];
+  createdAt: string;
+  updatedAt: string;
+}

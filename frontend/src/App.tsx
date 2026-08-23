@@ -16,6 +16,7 @@ import { TecnicoCelularHibrido } from './pages/TecnicoCelularHibrido';
 import { AdminUsers } from './pages/AdminUsers';
 import { AdminReports } from './pages/AdminReports';
 import { AdminEstoque } from './pages/AdminEstoque';
+import { VendasPDV } from './pages/VendasPDV';
 import { PublicOSLookup } from './pages/PublicOSLookup';
 
 // Layout protegido com Chat Drawer e Interfone de Voz Global
@@ -192,6 +193,15 @@ export const App: React.FC = () => {
               element={
                 <ProtectedLayout allowedRoles={['ATENDENTE', 'GERENTE', 'ADMIN', 'TECNICO_CELULAR', 'TRAINEE']}>
                   <AtendenteDashboard />
+                </ProtectedLayout>
+              }
+            />
+
+            <Route
+              path="/pdv"
+              element={
+                <ProtectedLayout allowedRoles={['ATENDENTE', 'GERENTE', 'ADMIN', 'TECNICO_CELULAR', 'TECNICO', 'TRAINEE']}>
+                  <VendasPDV />
                 </ProtectedLayout>
               }
             />

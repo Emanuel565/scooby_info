@@ -13,6 +13,8 @@ import dashboardRoutes from './routes/dashboard.routes.js';
 import publicRoutes from './routes/public.routes.js';
 import estoqueRoutes from './routes/estoque.routes.js';
 import chatRoutes from './routes/chat.routes.js';
+import vendaRoutes from './routes/venda.routes.js';
+import { setVendaSocketIO } from './controllers/venda.controller.js';
 
 dotenv.config();
 
@@ -47,10 +49,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json({ limit: '15mb' })); // Limite expandido para mensagens de áudio
+app.use(express.json({ limit: '25mb' })); // Limite expandido para mensagens de áudio e planilhas Excel
 
 // Inicializar WebSocket
 export const io = initSocket(server, prisma);
+setVendaSocketIO(io);
 
 // Rotas da API
 app.use('/api/public', publicRoutes);
@@ -58,6 +61,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/os', osRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/estoque', estoqueRoutes);
+app.use('/api/vendas', vendaRoutes);
 app.use('/api/chat', chatRoutes);
 
 // Informações de rede para compartilhamento e conexão de outros computadores
