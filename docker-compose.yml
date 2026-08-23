@@ -1,24 +1,48 @@
+version: '3.8'
+
 services:
-  redis:
-    image: redis:alpine
-    container_name: scooby-redis
+  # ==========================================
+  # 🐘 BANCO DE DADOS POSTGRESQL (ALTA ESCALA)
+  # ==========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: scooby_postgres
     restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: scoobypassword
+      POSTGRES_DB: scoobydb
+      TZ: America/Sao_Paulo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d scoobydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # ⚡ CACHE & PERFORMANCE REDIS
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: scooby_redis
+    restart: always
+    command: redis-server --appendonly yes
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes
-
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: scooby-redis-ui
-    restart: always
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-    ports:
-      - "8081:8081"
-    depends_on:
-      - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
+  postgres_data:
+    name: scooby_postgres_data
   redis_data:
+    name: scooby_redis_data
