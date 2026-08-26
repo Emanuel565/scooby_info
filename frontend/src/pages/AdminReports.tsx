@@ -349,23 +349,37 @@ export const AdminReports: React.FC = () => {
               </div>
 
               {data.desempenhoTecnicos.length === 0 ? (
-                <p className="text-xs text-slate-500 text-center py-6">Nenhum técnico finalizou OS no período selecionado.</p>
+                <p className="text-xs text-slate-500 text-center py-6">Nenhum técnico cadastrado no sistema.</p>
               ) : (
                 <div className="space-y-3">
-                  {data.desempenhoTecnicos.map((tech) => (
-                    <div key={tech.id} className="p-3 rounded-2xl bg-slate-950/40 border border-white/5 flex items-center justify-between print:border print:border-slate-200 print:bg-white">
+                  {data.desempenhoTecnicos.map((tech: any) => (
+                    <div key={tech.id} className="p-3.5 rounded-2xl bg-slate-950/40 border border-white/5 flex flex-wrap items-center justify-between gap-3 hover:border-brand-500/30 transition-all print:border print:border-slate-200 print:bg-white">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-brand-500/20 text-brand-300 font-bold text-xs flex items-center justify-center border border-brand-500/30 print:border-slate-400 print:text-black">
-                          {tech.nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                        <div className="w-9 h-9 rounded-xl bg-brand-500/20 text-brand-300 font-bold text-xs flex items-center justify-center border border-brand-500/30 print:border-slate-400 print:text-black shadow-sm">
+                          {tech.nome.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-bold text-white text-xs print:text-black">{tech.nome}</p>
-                          <p className="text-[11px] text-slate-400 print:text-slate-600">{tech.totalOS} Ordens de Serviço finalizadas</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-bold text-white text-xs print:text-black">{tech.nome}</p>
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-white/5 text-slate-400 border border-white/10">
+                              {tech.cargo === 'ADMIN' ? '👑 Admin' : tech.cargo === 'GERENTE' ? '⭐ Gerente' : '🔧 Técnico'}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-400 print:text-slate-600 mt-0.5">
+                            <strong className="text-emerald-400 font-mono">{tech.totalOS}</strong> OSs concluídas
+                            {tech.osEmAndamento > 0 && (
+                              <span className="text-amber-400 font-mono ml-1.5">• {tech.osEmAndamento} em bancada</span>
+                            )}
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-black text-emerald-400 text-xs print:text-black">{formatCurrency(tech.faturamento)}</p>
-                        <p className="text-[10px] text-slate-500 print:text-slate-600">gerados em consertos</p>
+                        <p className="font-black text-emerald-400 text-sm font-mono print:text-black">
+                          {formatCurrency(tech.faturamento)}
+                        </p>
+                        <p className="text-[10px] text-teal-300 font-semibold print:text-slate-600">
+                          {tech.totalOS > 0 ? `Lucro: +${formatCurrency(tech.lucroLiquido || tech.faturamento)}` : 'Sem faturamento no período'}
+                        </p>
                       </div>
                     </div>
                   ))}

@@ -98,6 +98,8 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
   };
 
   // Estados de Edição
+  const [editCodigoOS, setEditCodigoOS] = useState(os?.codigo_os || '');
+  const [editDataAbertura, setEditDataAbertura] = useState('');
   const [editNome, setEditNome] = useState(os?.cliente_nome || '');
   const [editTelefone, setEditTelefone] = useState(os?.cliente_telefone || '');
   const [editWhatsapp, setEditWhatsapp] = useState(os?.cliente_whatsapp || '');
@@ -178,6 +180,12 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
   };
 
   const handleStartEdit = () => {
+    setEditCodigoOS(os.codigo_os);
+    const d = new Date(os.createdAt);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const dtStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    setEditDataAbertura(dtStr);
+
     setEditNome(os.cliente_nome);
     setEditTelefone(os.cliente_telefone);
     setEditWhatsapp(os.cliente_whatsapp || '');
@@ -207,6 +215,8 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
           Authorization: `Bearer ${localStorage.getItem('scooby_token')}`
         },
         body: JSON.stringify({
+          codigo_os: editCodigoOS.trim(),
+          data_hora_abertura: editDataAbertura || undefined,
           cliente_nome: editNome.trim(),
           cliente_telefone: editTelefone.trim(),
           cliente_whatsapp: editWhatsapp.trim() || editTelefone.trim(),
@@ -365,6 +375,36 @@ export const OSDetailsModal: React.FC<OSDetailsModalProps> = ({ os, onClose, onO
                 Editar Dados da Ordem de Serviço {os.codigo_os}
               </span>
               <span className="text-[11px] text-amber-400 font-semibold">Modo de Edição Administrativa</span>
+            </div>
+
+            {/* Identificação da OS (Número e Data de Abertura) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-amber-950/20 border border-amber-500/30">
+              <div>
+                <label className="font-bold text-amber-300 block mb-1">
+                  Número / Código da OS (Bling / Personalizado) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editCodigoOS}
+                  onChange={(e) => setEditCodigoOS(e.target.value)}
+                  placeholder="Ex: 70 ou 1245 ou OS-2026-0001"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-amber-500/40 text-white font-mono font-bold focus:border-amber-400 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-amber-300 block mb-1">
+                  Data & Hora de Entrada Original (Retroativa) *
+                </label>
+                <input
+                  type="datetime-local"
+                  required
+                  value={editDataAbertura}
+                  onChange={(e) => setEditDataAbertura(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-amber-500/40 text-white font-mono focus:border-amber-400 focus:outline-none"
+                />
+              </div>
             </div>
 
             {/* Cliente */}

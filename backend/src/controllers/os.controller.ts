@@ -14,8 +14,24 @@ const invalidateDashboardCache = async () => {
 
 const generateOSCode = async (): Promise<string> => {
   const currentYear = new Date().getFullYear();
-  const count = await prisma.ordemServico.count();
-  const nextNum = (count + 1).toString().padStart(4, '0');
+  const allOS = await prisma.ordemServico.findMany({
+    select: { codigo_os: true }
+  });
+
+  let maxNum = 0;
+  for (const item of allOS) {
+    const code = item.codigo_os || '';
+    const matches = code.match(/\d+/g);
+    if (matches && matches.length > 0) {
+      const lastGroup = matches[matches.length - 1];
+      const parsed = parseInt(lastGroup, 10);
+      if (!isNaN(parsed) && parsed > maxNum && parsed < 1000000) {
+        maxNum = parsed;
+      }
+    }
+  }
+
+  const nextNum = (maxNum + 1).toString().padStart(4, '0');
   return `OS-${currentYear}-${nextNum}`;
 };
 
@@ -27,6 +43,8 @@ export const createOS = async (req: AuthRequest, res: Response): Promise<void> =
     }
 
     const {
+      codigo_os_manual,
+      data_hora_abertura,
       cliente_nome,
       cliente_telefone,
       cliente_whatsapp,
@@ -52,7 +70,26 @@ export const createOS = async (req: AuthRequest, res: Response): Promise<void> =
       return;
     }
 
-    const codigo_os = await generateOSCode();
+    let codigo_os = '';
+    if (codigo_os_manual && String(codigo_os_manual).trim() !== '') {
+      codigo_os = String(codigo_os_manual).trim();
+      const existingOS = await prisma.ordemServico.findUnique({
+        where: { codigo_os }
+      });
+      if (existingOS) {
+        res.status(400).json({ 
+          error: `O número/código de OS "${codigo_os}" já está em uso na OS de ${existingOS.cliente_nome}. Escolha outro número.` 
+        });
+        return;
+      }
+    } else {
+      codigo_os = await generateOSCode();
+    }
+
+    let dataCriacao = new Date();
+    if (data_hora_abertura && !isNaN(new Date(data_hora_abertura).getTime())) {
+      dataCriacao = new Date(data_hora_abertura);
+    }
 
     let statusInicial = 'TRIAGEM';
     let tecnicoId: number | null = null;
@@ -85,7 +122,8 @@ export const createOS = async (req: AuthRequest, res: Response): Promise<void> =
         fotos_equipamento: typeof fotos_equipamento === 'string' ? fotos_equipamento : JSON.stringify(fotos_equipamento || []),
         status: statusInicial,
         tecnico_id: tecnicoId,
-        criado_por_id: req.user.id
+        criado_por_id: req.user.id,
+        createdAt: dataCriacao
       },
       include: {
         tecnico: { select: { id: true, nome: true, login: true, cargo: true } },
@@ -499,6 +537,8 @@ export const updateOS = async (req: AuthRequest, res: Response): Promise<void> =
 
     const { id } = req.params;
     const {
+      codigo_os,
+      data_hora_abertura,
       cliente_nome,
       cliente_telefone,
       cliente_whatsapp,
@@ -524,9 +564,26 @@ export const updateOS = async (req: AuthRequest, res: Response): Promise<void> =
       return;
     }
 
+    let finalCodigoOS = osExistente.codigo_os;
+    if (codigo_os && String(codigo_os).trim() !== osExistente.codigo_os) {
+      finalCodigoOS = String(codigo_os).trim();
+      const codeInUse = await prisma.ordemServico.findUnique({ where: { codigo_os: finalCodigoOS } });
+      if (codeInUse && codeInUse.id !== osExistente.id) {
+        res.status(400).json({ error: `O número/código "${finalCodigoOS}" já está em uso na OS de ${codeInUse.cliente_nome}.` });
+        return;
+      }
+    }
+
+    let finalCreatedAt: Date | undefined = undefined;
+    if (data_hora_abertura && !isNaN(new Date(data_hora_abertura).getTime())) {
+      finalCreatedAt = new Date(data_hora_abertura);
+    }
+
     const updatedOS = await prisma.ordemServico.update({
       where: { id: Number(id) },
       data: {
+        codigo_os: finalCodigoOS,
+        createdAt: finalCreatedAt,
         cliente_nome: cliente_nome !== undefined ? cliente_nome : undefined,
         cliente_telefone: cliente_telefone !== undefined ? cliente_telefone : undefined,
         cliente_whatsapp: cliente_whatsapp !== undefined ? cliente_whatsapp : undefined,

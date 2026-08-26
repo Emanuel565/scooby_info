@@ -257,25 +257,83 @@ export const getAdminReports = async (req: AuthRequest, res: Response): Promise<
       };
     }).sort((a, b) => b.faturamento - a.faturamento);
 
-    // 4. Desempenho por Técnico QUE FINALIZOU O SERVIÇO
-    const tecnicoMap: Record<number, { id: number; nome: string; cargo: string; totalOS: number; faturamento: number; tempoTotalSegundos: number }> = {};
-
-    concluidas.forEach(o => {
-      // Prioriza quem concluiu o serviço, seguido pelo técnico atribuído ou criador
-      const techFinalizou = o.concluido_por || o.tecnico || o.criado_por;
-      const tId = techFinalizou?.id || 0;
-      const tNome = techFinalizou?.nome || 'Técnico';
-      const tCargo = techFinalizou?.cargo || 'TECNICO';
-
-      if (!tecnicoMap[tId]) {
-        tecnicoMap[tId] = { id: tId, nome: tNome, cargo: tCargo, totalOS: 0, faturamento: 0, tempoTotalSegundos: 0 };
-      }
-      tecnicoMap[tId].totalOS += 1;
-      tecnicoMap[tId].faturamento += (o.valor_final || o.orcamento_valor || 0);
-      tecnicoMap[tId].tempoTotalSegundos += (o.tempo_bancada_segundos || 0);
+    // 4. Desempenho por Técnico - Inclui TODOS os técnicos cadastrados
+    const allStaff = await prisma.usuario.findMany({
+      where: {
+        cargo: { in: ['TECNICO', 'TECNICO_CELULAR', 'ADMIN', 'GERENTE', 'TRAINEE'] }
+      },
+      select: { id: true, nome: true, cargo: true }
     });
 
-    const desempenhoTecnicos = Object.values(tecnicoMap).sort((a, b) => b.faturamento - a.faturamento);
+    const tecnicoMap: Record<number, { 
+      id: number; 
+      nome: string; 
+      cargo: string; 
+      totalOS: number; 
+      osEmAndamento: number;
+      faturamento: number; 
+      lucroLiquido: number;
+      tempoTotalSegundos: number 
+    }> = {};
+
+    // Inicializa todos os colaboradores técnicos para sempre aparecerem na listagem
+    allStaff.forEach(staff => {
+      tecnicoMap[staff.id] = {
+        id: staff.id,
+        nome: staff.nome,
+        cargo: staff.cargo,
+        totalOS: 0,
+        osEmAndamento: 0,
+        faturamento: 0,
+        lucroLiquido: 0,
+        tempoTotalSegundos: 0
+      };
+    });
+
+    // Computa as ordens concluídas
+    concluidas.forEach(o => {
+      const techFinalizou = o.concluido_por || o.tecnico || o.criado_por;
+      const tId = techFinalizou?.id;
+      const vFinal = o.valor_final || o.orcamento_valor || 0;
+      const cPecas = o.custo_pecas || 0;
+      const lLiq = o.lucro_liquido || (vFinal - cPecas);
+      const tSecs = o.tempo_bancada_segundos || 0;
+
+      if (tId && tecnicoMap[tId]) {
+        tecnicoMap[tId].totalOS += 1;
+        tecnicoMap[tId].faturamento += vFinal;
+        tecnicoMap[tId].lucroLiquido += lLiq;
+        tecnicoMap[tId].tempoTotalSegundos += tSecs;
+      } else if (tId) {
+        tecnicoMap[tId] = {
+          id: tId,
+          nome: techFinalizou.nome,
+          cargo: techFinalizou.cargo,
+          totalOS: 1,
+          osEmAndamento: 0,
+          faturamento: vFinal,
+          lucroLiquido: lLiq,
+          tempoTotalSegundos: tSecs
+        };
+      }
+    });
+
+    // Computa as ordens ativas em andamento por técnico
+    const ativas = await prisma.ordemServico.findMany({
+      where: {
+        ...whereDateFilter,
+        status: { in: ['EM_ANDAMENTO', 'AGUARDANDO_PECA', 'AGUARDANDO_APROVACAO', 'TESTES'] }
+      },
+      select: { tecnico_id: true }
+    });
+
+    ativas.forEach(o => {
+      if (o.tecnico_id && tecnicoMap[o.tecnico_id]) {
+        tecnicoMap[o.tecnico_id].osEmAndamento += 1;
+      }
+    });
+
+    const desempenhoTecnicos = Object.values(tecnicoMap).sort((a, b) => b.faturamento - a.faturamento || b.totalOS - a.totalOS);
 
     // 5. Relatório Estruturado
     const reportResult = {

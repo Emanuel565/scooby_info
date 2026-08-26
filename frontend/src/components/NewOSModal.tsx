@@ -66,6 +66,15 @@ export const NewOSModal: React.FC<NewOSModalProps> = ({
   const [prioridade, setPrioridade] = useState('MEDIA');
   const [prazoEntrega, setPrazoEntrega] = useState(() => getPrazoPreset(3));
 
+  // Migração Bling & Numeração Manual
+  const [usarNumeroManual, setUsarNumeroManual] = useState(false);
+  const [codigoOSManual, setCodigoOSManual] = useState('');
+  const [dataHoraAbertura, setDataHoraAbertura] = useState(() => {
+    const d = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  });
+
   // Checklist de entrada geral
   const [checklist, setChecklist] = useState<Record<string, boolean>>({
     liga: true,
@@ -124,6 +133,8 @@ export const NewOSModal: React.FC<NewOSModalProps> = ({
           Authorization: `Bearer ${localStorage.getItem('scooby_token')}`
         },
         body: JSON.stringify({
+          codigo_os_manual: usarNumeroManual ? codigoOSManual.trim() : undefined,
+          data_hora_abertura: usarNumeroManual ? dataHoraAbertura : undefined,
           cliente_nome: clienteNome,
           cliente_whatsapp: clienteWhatsapp || null,
           cliente_telefone: telefonePrincipal,
@@ -188,6 +199,73 @@ export const NewOSModal: React.FC<NewOSModalProps> = ({
               <span>{error}</span>
             </div>
           )}
+
+          {/* Opção Especial: Migração do Bling & Numeração Manual */}
+          <div className={`p-4 rounded-2xl border transition-all ${
+            usarNumeroManual 
+              ? 'bg-amber-950/40 border-amber-500/50 shadow-md' 
+              : 'bg-slate-950/40 border-white/5 hover:border-white/10'
+          }`}>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={usarNumeroManual}
+                onChange={(e) => setUsarNumeroManual(e.target.checked)}
+                className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 bg-slate-900 border-white/20"
+              />
+              <div>
+                <span className="font-bold text-white text-xs block flex items-center gap-1.5">
+                  <span>🔢 Digitar número e data/hora manualmente (Migração do Bling)</span>
+                  {usarNumeroManual && (
+                    <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono">
+                      ATIVO
+                    </span>
+                  )}
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  Marque para importar OSs antigas do Bling mantendo o mesmo número e data/hora original de entrada.
+                </span>
+              </div>
+            </label>
+
+            {usarNumeroManual && (
+              <div className="mt-3 pt-3 border-t border-amber-500/20 grid grid-cols-1 sm:grid-cols-2 gap-3 animate-fade-in">
+                <div>
+                  <label className="block text-amber-300 font-bold mb-1">
+                    Número / Código da OS no Bling *
+                  </label>
+                  <input
+                    type="text"
+                    required={usarNumeroManual}
+                    placeholder="Ex: 70 ou 1245 ou OS-1245"
+                    value={codigoOSManual}
+                    onChange={(e) => setCodigoOSManual(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-amber-500/50 text-white placeholder-slate-600 focus:border-amber-400 focus:outline-none font-mono font-bold"
+                  />
+                  <span className="text-[10px] text-slate-400 mt-1 block">
+                    As próximas OSs automáticas darão sequência contínua a partir deste número.
+                  </span>
+                </div>
+
+                <div>
+                  <label className="block text-amber-300 font-bold mb-1 flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>Data & Hora de Entrada Original *</span>
+                  </label>
+                  <input
+                    type="datetime-local"
+                    required={usarNumeroManual}
+                    value={dataHoraAbertura}
+                    onChange={(e) => setDataHoraAbertura(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-amber-500/50 text-white focus:border-amber-400 focus:outline-none font-mono"
+                  />
+                  <span className="text-[10px] text-slate-400 mt-1 block">
+                    Data/hora em que o chamado deu entrada no Bling no passado.
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Dados do Cliente */}
           <div className="space-y-3">
