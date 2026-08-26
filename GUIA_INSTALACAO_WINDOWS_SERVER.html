@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Guia de Instalação e Configuração no Windows Server - Scooby OS</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #ffffff;
+      padding: 40px 30px;
+    }
+
+    .header-box {
+      border-bottom: 3px solid #0d9488;
+      padding-bottom: 20px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .header-box h1 {
+      color: #0f172a;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+    }
+
+    .header-box .subtitle {
+      color: #0f766e;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .badge {
+      background-color: #0d9488;
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      color: #0f766e;
+      font-size: 16px;
+      font-weight: 800;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      border-left: 4px solid #0d9488;
+      padding-left: 10px;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      color: #1e293b;
+      font-size: 13.5px;
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    p, li {
+      font-size: 12.5px;
+      color: #334155;
+    }
+
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin: 12px 0;
+    }
+
+    .card-accent {
+      background-color: #f0fdfa;
+      border: 1px solid #99f6e4;
+      border-left: 4px solid #0d9488;
+    }
+
+    .card-warning {
+      background-color: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #d97706;
+    }
+
+    .code-block {
+      background-color: #0f172a;
+      color: #38bdf8;
+      font-family: 'Consolas', 'Courier New', monospace;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      margin: 8px 0;
+      font-weight: 600;
+    }
+
+    .step-number {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      background-color: #0d9488;
+      color: #ffffff;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 22px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-right: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 11.5px;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 7px 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0f766e;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .diagram {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: 'Consolas', monospace;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 10.5px;
+      line-height: 1.4;
+      white-space: pre;
+      margin: 10px 0;
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 10.5px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        padding: 15px 20px;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <div class="header-box">
+    <div>
+      <h1>🐕 Scooby OS - Guia de Instalação</h1>
+      <div class="subtitle">Manual Oficial de Deploy em Windows Server / Computador Central</div>
+    </div>
+    <div>
+      <span class="badge">Versão Servidor 24/7</span>
+    </div>
+  </div>
+
+  <!-- DIAGRAMA DA REDE -->
+  <h2>🌐 1. Arquitetura da Rede Local</h2>
+  <p>O Scooby OS funciona centralizado em um único computador/servidor na oficina, atendendo simultaneamente todas as estações de trabalho via rede local (Cabo ou Wi-Fi):</p>
+  
+  <div class="diagram">
+                        ┌────────────────────────────────────────────────────────┐
+                        │              SERVIDOR CENTRAL (Oficina)                │
+                        │  • IP Local: 192.168.100.XX                            │
+                        │  • Banco de Dados: PostgreSQL 16 (Porta 5432)          │
+                        │  • Memória & Cache: Redis 7 (Porta 6379)               │
+                        │  • Servidor Scooby OS (Porta 3001)                     │
+                        └───────────────────────────┬────────────────────────────┘
+                                                    │ Rede Local da Empresa
+                ┌───────────────────────────────────┼───────────────────────────────────┐
+                ▼                                   ▼                                   ▼
+      ┌────────────────────┐              ┌────────────────────┐              ┌────────────────────┐
+      │   BALCÃO / PDV     │              │  BANCADA TÉCNICA   │              │   ADMINISTRAÇÃO    │
+      │ (Atendimento 1 e 2)│              │ (Donizete / Banc.) │              │  (Notebook / Dono) │
+      │http://192.168...   │              │http://192.168...   │              │http://192.168...   │
+      └────────────────────┘              └────────────────────┘              └────────────────────┘</div>
+
+  <!-- PRÉ-REQUISITOS -->
+  <h2>📋 2. Pré-Requisitos no Servidor (Instalar 1 única vez)</h2>
+  <div class="card">
+    <ol>
+      <li><strong>Node.js (v20 ou v22 LTS):</strong> Baixe e instale em <a href="https://nodejs.org">https://nodejs.org</a> <em>(marque a opção padrão de adicionar ao PATH)</em>.</li>
+      <li><strong>Docker Desktop for Windows:</strong> Baixe e instale em <a href="https://www.docker.com/products/docker-desktop/">https://docker.com</a> <em>(necessário para o PostgreSQL 16 e Redis 7)</em>.</li>
+      <li><strong>Git for Windows (Opcional):</strong> Baixe em <a href="https://git-scm.com">https://git-scm.com</a> <em>(facilita atualizações automáticas)</em>.</li>
+    </ol>
+  </div>
+
+  <!-- PASSO A PASSO -->
+  <h2>🚀 3. Passo a Passo de Instalação</h2>
+
+  <div class="card card-accent">
+    <h3><span class="step-number">1</span>Copiar os Arquivos do Pen Drive para o Servidor</h3>
+    <p>Conecte o Pen Drive no Windows Server e copie a pasta <strong>SCOOBY_PENDRIVE</strong> para a unidade <code>C:\</code> do computador, renomeando para <strong><code>C:\Scooby</code></strong>.</p>
+  </div>
+
+  <div class="card card-accent">
+    <h3><span class="step-number">2</span>Executar o Instalador Automático</h3>
+    <p>Dentro da pasta <code>C:\Scooby</code>, clique com o <strong>botão direito</strong> no arquivo:</p>
+    <div class="code-block">INSTALAR_WINDOWS_SERVER.bat ➔ "Executar como Administrador"</div>
+    <p>O script executará automaticamente todas as tarefas:</p>
+    <ul>
+      <li>Inicia os contêineres do <strong>PostgreSQL 16</strong> e <strong>Redis 7</strong> via Docker.</li>
+      <li>Instala todas as dependências e compila o Frontend de alta performance.</li>
+      <li>Cria a regra no <strong>Firewall do Windows</strong> liberando a <strong>Porta 3001</strong> para a rede local.</li>
+      <li>Configura a tarefa de <strong>Backup Automático Diário</strong> para as 19:00h.</li>
+      <li>Exibe na tela o IP Local da máquina para acesso dos outros computadores.</li>
+    </ul>
+  </div>
+
+  <div class="card card-accent">
+    <h3><span class="step-number">3</span>Restaurar os Dados do Banco Existente (Clientes, OSs e Estoque)</h3>
+    <p>Após a conclusão do instalador, execute com 2 cliques o arquivo:</p>
+    <div class="code-block">RESTAURAR_BACKUP_BANCO.bat</div>
+    <p>O script listará os backups disponíveis na pasta <code>backups/</code>. Digite o número correspondente ao arquivo <code>.sql</code> mais recente e confirme digitando <code>SIM</code>. Todos os seus dados serão carregados instantaneamente!</p>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ACESSO DOS CLIENTES NA REDE -->
+  <h2>💻 4. Como Conectar os Outros Computadores da Oficina</h2>
+  <div class="card">
+    <p>Em qualquer computador do <strong>Balcão</strong>, <strong>Bancada</strong> ou <strong>Gerência</strong> conectado no Wi-Fi ou cabo da loja:</p>
+    <ol>
+      <li>Abra o navegador de internet (Google Chrome, Edge).</li>
+      <li>Digite o endereço com o IP do servidor (exemplo):
+        <div class="code-block">http://192.168.100.73:3001</div>
+      </li>
+      <li><strong>Criar Atalho na Área de Trabalho:</strong> No Chrome ou Edge, clique nos 3 pontinhos do canto superior ➔ <em>"Mais Ferramentas" / "Aplicativos"</em> ➔ <em>"Instalar este site como aplicativo"</em> ou <em>"Criar Atalho..."</em>.</li>
+    </ol>
+  </div>
+
+  <!-- ROTINA DE BACKUPS -->
+  <h2>💾 5. Rotina de Backups e Segurança de Dados</h2>
+  <div class="card card-accent">
+    <ul>
+      <li><strong>Backup Automático:</strong> Configurado para rodar todos os dias às <strong>19:00h</strong> de forma silenciosa, salvando cópias <code>.sql</code> na pasta <code>C:\Scooby\backups</code> e mantendo os últimos 30 dias.</li>
+      <li><strong>Backup Manual:</strong> Dê 2 cliques em <code>GERAR_BACKUP_BANCO.bat</code> a qualquer momento.</li>
+      <li><strong>Recomendação de Segurança:</strong> Uma vez por semana, copie os arquivos da pasta <code>backups/</code> para um Pen Drive externo ou Google Drive.</li>
+    </ul>
+  </div>
+
+  <!-- ATUALIZAÇÕES FUTURAS -->
+  <h2>🔄 6. Como Atualizar o Sistema Sem Perder Nenhum Dado</h2>
+  <div class="card">
+    <p>Sempre que novas melhorias forem desenvolvidas:</p>
+    <ol>
+      <li>Dê 2 cliques no arquivo <strong><code>ATUALIZAR_SISTEMA_SEM_PERDER_DADOS.bat</code></strong>.</li>
+      <li>O script gera um backup preventivo do banco, baixa as atualizações e recompila o sistema mantendo 100% das suas OSs, clientes e cadastros intactos.</li>
+    </ol>
+  </div>
+
+  <!-- TABELA DE ATALHOS E SCRIPTS -->
+  <h2>📁 7. Resumo dos Arquivos do Servidor</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Arquivo / Script</th>
+        <th>Finalidade</th>
+        <th>Como Executar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>INSTALAR_WINDOWS_SERVER.bat</strong></td>
+        <td>Instalação completa, Docker, Firewall e rotinas</td>
+        <td>Executar como Administrador</td>
+      </tr>
+      <tr>
+        <td><strong>RESTAURAR_BACKUP_BANCO.bat</strong></td>
+        <td>Restaura cópias de segurança do banco de dados</td>
+        <td>2 cliques normais</td>
+      </tr>
+      <tr>
+        <td><strong>GERAR_BACKUP_BANCO.bat</strong></td>
+        <td>Gera backup imediato do PostgreSQL</td>
+        <td>2 cliques normais</td>
+      </tr>
+      <tr>
+        <td><strong>ATUALIZAR_SISTEMA_SEM_PERDER_DADOS.bat</strong></td>
+        <td>Atualiza o sistema mantendo todos os dados</td>
+        <td>2 cliques normais</td>
+      </tr>
+      <tr>
+        <td><strong>MANUAL_DO_USUARIO_POR_CARGO.pdf</strong></td>
+        <td>Manual de operação para os colaboradores</td>
+        <td>Visualizar / Imprimir</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- DICAS & RESOLUÇÃO DE DÚVIDAS -->
+  <h2>❓ 8. Dúvidas Frequentes</h2>
+  <div class="card card-warning">
+    <p><strong>P: O computador do balcão não consegue abrir o link do servidor.</strong><br>
+    <em>R: Verifique se ambos os computadores estão conectados na mesma rede Wi-Fi/cabo e se a regra da porta 3001 foi criada no Firewall do Windows Server executando o instalador como Administrador.</em></p>
+    <br>
+    <p><strong>P: E se faltar luz ou o servidor reiniciar?</strong><br>
+    <em>R: O Docker inicia o banco de dados e cache automaticamente com o Windows. Para iniciar o Scooby OS, basta dar 2 cliques em <code>INSTALAR_WINDOWS_SERVER.bat</code> (ou deixar o serviço do PM2 configurado para início com o Windows).</em></p>
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="footer">
+    <span>Scooby Informática & Assistência Técnica • Sistema de Gestão Scooby OS</span>
+    <span>Desenvolvido por Emanuel Carvalho</span>
+  </div>
+
+</body>
+</html>
