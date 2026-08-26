@@ -425,12 +425,102 @@ export const importDefaultEstoqueItems = async (req: AuthRequest, res: Response)
 
     invalidateEstoqueCache();
 
+};
+
+// Lista serviços de balcão pré-configurados (ou padrões caso ainda não cadastrados no banco)
+export const listServicosBalcao = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const servicosDb = await prisma.itemEstoque.findMany({
+      where: { categoria: 'SERVICO_BALCAO' },
+      orderBy: { id: 'asc' }
+    });
+
+    if (servicosDb.length > 0) {
+      res.json({ servicos: servicosDb });
+      return;
+    }
+
+    // Se ainda não houver nenhum no banco, popula os 8 padrões automaticamente
+    const servicosPadrao = [
+      { nome: 'Impressão Preto & Branco (A4)', preco_venda: 1.00, preco_custo: 0.10, categoria: 'SERVICO_BALCAO', condicao: 'NOVO', quantidade: 99999, estoque_minimo: 0, garantia_meses: 0, detalhes_condicao: '📄 Xerox ou impressão monocromática por folha' },
+      { nome: 'Impressão Colorida (A4 Gráfica)', preco_venda: 2.50, preco_custo: 0.35, categoria: 'SERVICO_BALCAO', condicao: 'NOVO', quantidade: 99999, estoque_minimo: 0, garantia_meses: 0, detalhes_condicao: '🎨 Impressão de imagens ou texto colorido em alta resolução' },
+      { nome: 'Elaboração e Impressão de Currículo', preco_venda: 20.00, preco_custo: 0.50, categoria: 'SERVICO_BALCAO', condicao: 'NOVO', quantidade: 99999, estoque_minimo: 0, garantia_meses: 0, detalhes_condicao: '📝 Digitação, formatação profissional e 2 vias impressas' },
+      { nome: 'Montagem & Edição de Fotos / Imagens', preco_venda: 15.00, preco_custo: 0.00, categoria: 'SERVICO_BALCAO', condicao: 'NOVO', quantidade: 99999, estoque_minimo: 0, garantia_meses: 0, detalhes_condicao: '🖼️ Foto 3x4, restauração, recorte, ajuste de imagem ou arte' },
+      { nome: 'Digitalização / Scanner de Documentos', preco_venda: 3.00, preco_custo: 0.00, categoria: 'SERVICO_BALCAO', condicao: 'NOVO', quantidade: 99999, estoque_minimo: 0, garantia_meses: 0, detalhes_condicao: '📂 Escaneamento em PDF e envio por WhatsApp ou E-mail' },
+      { nome: 'Aplicação de Película (Mão de Obra)', preco_venda: 10.00, preco_custo: 0.00, categoria: 'SERVICO_BALCAO', condicao: 'NOVO', quantidade: 99999, estoque_minimo: 0, garantia_meses: 0, detalhes_condicao: '🛡️ Instalação profissional alinhada sem bolhas' },
+      { nome: 'Backup de Arquivos em Pen Drive', preco_venda: 20.00, preco_custo: 0.00, categoria: 'SERVICO_BALCAO', condicao: 'NOVO', quantidade: 99999, estoque_minimo: 0, garantia_meses: 0, detalhes_condicao: '💾 Cópia e organização de fotos, documentos e arquivos' },
+      { nome: 'Limpeza & Desoxidação de Conector', preco_venda: 35.00, preco_custo: 0.00, categoria: 'SERVICO_BALCAO', condicao: 'NOVO', quantidade: 99999, estoque_minimo: 0, garantia_meses: 0, detalhes_condicao: '🧹 Higienização de conector de carga e fones' }
+    ];
+
+    const criados = [];
+    for (const s of servicosPadrao) {
+      const item = await prisma.itemEstoque.create({ data: s });
+      criados.push(item);
+    }
+
+    invalidateEstoqueCache();
+    res.json({ servicos: criados });
+  } catch (error) {
+    console.error('Erro ao listar serviços de balcão:', error);
+    res.status(500).json({ error: 'Erro ao carregar serviços de balcão.' });
+  }
+};
+
+// Salva/Atualiza a tabela de preços de serviços de balcão (Exclusivo ADMIN / GERENTE)
+export const saveServicosBalcao = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { servicos } = req.body;
+    if (!Array.isArray(servicos)) {
+      res.status(400).json({ error: 'Lista de serviços inválida.' });
+      return;
+    }
+
+    for (const s of servicos) {
+      const precoVenda = parseFloat(s.preco_venda) || 0;
+      const precoCusto = parseFloat(s.preco_custo) || 0;
+      const nome = String(s.nome).trim();
+      const detalhes = s.detalhes_condicao ? String(s.detalhes_condicao).trim() : null;
+
+      if (s.id && s.id > 0) {
+        await prisma.itemEstoque.update({
+          where: { id: Number(s.id) },
+          data: {
+            nome,
+            preco_venda: precoVenda,
+            preco_custo: precoCusto,
+            detalhes_condicao: detalhes
+          }
+        });
+      } else if (nome) {
+        await prisma.itemEstoque.create({
+          data: {
+            nome,
+            categoria: 'SERVICO_BALCAO',
+            condicao: 'NOVO',
+            quantidade: 99999,
+            estoque_minimo: 0,
+            preco_venda: precoVenda,
+            preco_custo: precoCusto,
+            garantia_meses: 0,
+            detalhes_condicao: detalhes
+          }
+        });
+      }
+    }
+
+    invalidateEstoqueCache();
+
+    const servicosAtualizados = await prisma.itemEstoque.findMany({
+      where: { categoria: 'SERVICO_BALCAO' },
+      orderBy: { id: 'asc' }
+    });
+
     res.json({
-      message: `Catálogo importado com sucesso! ${criados} novos produtos (Novos e Usados) cadastrados.`,
-      totalImportados: criados
+      message: 'Preços de serviços de balcão atualizados com sucesso!',
+      servicos: servicosAtualizados
     });
   } catch (error) {
-    console.error('Erro ao importar itens padrão de estoque:', error);
-    res.status(500).json({ error: 'Erro ao importar itens padrão.' });
+    console.error('Erro ao salvar serviços de balcão:', error);
+    res.status(500).json({ error: 'Erro ao salvar tabela de preços.' });
   }
 };

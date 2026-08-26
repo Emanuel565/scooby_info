@@ -6,7 +6,9 @@ import {
   deleteEstoqueItem, 
   importDefaultEstoqueItems,
   importarExcelEstoque,
-  exportarExcelEstoque
+  exportarExcelEstoque,
+  listServicosBalcao,
+  saveServicosBalcao
 } from '../controllers/estoque.controller.js';
 import { authMiddleware, requireRole } from '../middleware/auth.middleware.js';
 
@@ -14,9 +16,13 @@ const router = Router();
 
 router.use(authMiddleware);
 
-// Todos os colaboradores logados podem consultar o estoque e exportar inventário
+// Todos os colaboradores logados podem consultar o estoque, serviços e exportar inventário
 router.get('/', listEstoque);
 router.get('/exportar-excel', exportarExcelEstoque);
+router.get('/servicos-balcao', listServicosBalcao);
+
+// Gerentes e Administradores podem salvar a tabela de preços de serviços rápidos
+router.post('/servicos-balcao', requireRole('ADMIN', 'GERENTE'), saveServicosBalcao);
 
 // Gerentes, Administradores e Atendentes podem cadastrar, alterar e importar planilhas
 router.post('/importar-excel', requireRole('ADMIN', 'GERENTE', 'ATENDENTE'), importarExcelEstoque);

@@ -27,7 +27,9 @@ import {
   HardDrive,
   Cpu,
   Smartphone,
-  Printer
+  Printer,
+  Settings,
+  Sliders
 } from 'lucide-react';
 
 interface CartItem extends ItemEstoque {
@@ -138,6 +140,15 @@ export const VendasPDV: React.FC = () => {
   const [filtroCategoria, setFiltroCategoria] = useState<string>('TODAS');
   const [secaoAtiva, setSecaoAtiva] = useState<'SERVICOS' | 'ACESSORIOS' | 'PRODUTOS' | 'TODOS'>('TODOS');
 
+  // Lista dinâmica de Serviços Rápidos de Balcão (Carregados do Banco / Editáveis pelo Admin)
+  const [servicosRapidos, setServicosRapidos] = useState<ItemEstoque[]>([]);
+  const [loadingServicos, setLoadingServicos] = useState(false);
+
+  // Modal de Edição de Preços dos Serviços (Exclusivo Admin / Gerente)
+  const [showEditPrecosModal, setShowEditPrecosModal] = useState(false);
+  const [servicosEditList, setServicosEditList] = useState<any[]>([]);
+  const [savingPrecos, setSavingPrecos] = useState(false);
+
   // Modal de Item/Serviço Avulso de Balcão
   const [showAvulsoModal, setShowAvulsoModal] = useState(false);
   const [avulsoNome, setAvulsoNome] = useState('');
@@ -170,6 +181,24 @@ export const VendasPDV: React.FC = () => {
   const [loadingHistory, setLoadingHistory] = useState(false);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Carrega serviços de balcão configurados no banco
+  const fetchServicosBalcao = async () => {
+    setLoadingServicos(true);
+    try {
+      const res = await fetch('/api/estoque/servicos-balcao', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('scooby_token')}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.servicos) {
+        setServicosRapidos(data.servicos);
+      }
+    } catch (err) {
+      console.error('Erro ao buscar serviços de balcão:', err);
+    } finally {
+      setLoadingServicos(false);
+    }
+  };
 
   // Carrega produtos do estoque
   const fetchProdutos = async () => {
@@ -210,6 +239,7 @@ export const VendasPDV: React.FC = () => {
 
   useEffect(() => {
     fetchProdutos();
+    fetchServicosBalcao();
   }, []);
 
   useEffect(() => {
@@ -217,6 +247,72 @@ export const VendasPDV: React.FC = () => {
       fetchHistoricoVendas();
     }
   }, [viewHistory]);
+
+  // Abre modal de edição de preços
+  const handleOpenEditPrecos = () => {
+    const listToEdit = servicosRapidos.map(s => ({
+      id: s.id,
+      nome: s.nome,
+      preco_venda: s.preco_venda,
+      preco_custo: s.preco_custo,
+      detalhes_condicao: s.detalhes_condicao || ''
+    }));
+    setServicosEditList(listToEdit);
+    setShowEditPrecosModal(true);
+  };
+
+  // Salva alterações na tabela de preços de serviços
+  const handleSaveEditPrecos = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingPrecos(true);
+    try {
+      const res = await fetch('/api/estoque/servicos-balcao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('scooby_token')}`
+        },
+        body: JSON.stringify({ servicos: servicosEditList })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao salvar preços.');
+      
+      setServicosRapidos(data.servicos);
+      setShowEditPrecosModal(false);
+      fetchProdutos();
+      alert('Tabela de preços de serviços atualizada com sucesso!');
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setSavingPrecos(false);
+    }
+  };
+
+  const handleAddNewServiceRow = () => {
+    setServicosEditList(prev => [
+      ...prev,
+      {
+        id: -(Date.now()),
+        nome: 'Novo Serviço',
+        preco_venda: 10.00,
+        preco_custo: 0.00,
+        detalhes_condicao: '⚡ Descrição do serviço'
+      }
+    ]);
+  };
+
+  const getServiceIcon = (nome: string, detalhes?: string) => {
+    const text = ((detalhes || '') + ' ' + (nome || '')).toLowerCase();
+    if (text.includes('color') || text.includes('🎨')) return '🎨';
+    if (text.includes('curric') || text.includes('📝')) return '📝';
+    if (text.includes('foto') || text.includes('imag') || text.includes('🖼️')) return '🖼️';
+    if (text.includes('scan') || text.includes('digita') || text.includes('📂')) return '📂';
+    if (text.includes('pelic') || text.includes('🛡️')) return '🛡️';
+    if (text.includes('backup') || text.includes('pen') || text.includes('💾')) return '💾';
+    if (text.includes('limp') || text.includes('desox') || text.includes('🧹')) return '🧹';
+    if (text.includes('impress') || text.includes('xerox') || text.includes('📄')) return '📄';
+    return '⚡';
+  };
 
   // Manipulação do Carrinho (Com suporte a Serviços e Produtos)
   const handleAddToCart = (produto: ItemEstoque) => {
@@ -577,38 +673,68 @@ export const VendasPDV: React.FC = () => {
             
             {/* PAINEL EXPRESSO DE SERVIÇOS DE BALCÃO (1 CLIQUE) */}
             <div className="glass-card rounded-3xl p-4 border-amber-500/30 bg-gradient-to-br from-amber-950/20 via-slate-900 to-slate-900 space-y-2.5 shadow-lg">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Serviços Rápidos de Balcão & Gráfica (1 Clique)</span>
-                </h3>
-                <span className="text-[10px] text-amber-200/80 font-medium">Estoque Livre</span>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Serviços Rápidos de Balcão & Gráfica (1 Clique)</span>
+                  </h3>
+                  <span className="text-[10px] text-amber-200/80 font-medium">Estoque Livre</span>
+                </div>
+
+                {/* Botão de Editar Preços Fixos (Exclusivo ADMIN e GERENTE) */}
+                {(user?.cargo === 'ADMIN' || user?.cargo === 'GERENTE') && (
+                  <button
+                    type="button"
+                    onClick={handleOpenEditPrecos}
+                    className="px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold flex items-center gap-1.5 cursor-pointer transition-all shadow-sm"
+                    title="Configurar valores fixos dos serviços de balcão"
+                  >
+                    <Settings className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Editar Preços Fixos</span>
+                  </button>
+                )}
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {SERVICOS_EXPRESSOS.map(servico => (
-                  <button
-                    key={servico.id}
-                    type="button"
-                    onClick={() => handleAddQuickService(servico)}
-                    className="p-2.5 rounded-2xl bg-slate-950/80 hover:bg-amber-950/40 border border-white/10 hover:border-amber-500/50 transition-all text-left flex flex-col justify-between group cursor-pointer hover:scale-[1.02] shadow-sm"
-                  >
-                    <div>
-                      <span className="text-lg block mb-1">{servico.icone}</span>
-                      <h4 className="font-bold text-white text-[11px] leading-tight group-hover:text-amber-300 transition-colors">
-                        {servico.nome}
-                      </h4>
-                    </div>
-                    <div className="mt-2 pt-1.5 border-t border-white/5 flex items-center justify-between">
-                      <span className="text-[10px] font-black text-amber-400 font-mono">
-                        {servico.badge}
-                      </span>
-                      <span className="w-5 h-5 rounded-lg bg-amber-500/20 text-amber-300 text-[10px] font-bold flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-all">
-                        +
-                      </span>
-                    </div>
-                  </button>
-                ))}
+                {(servicosRapidos.length > 0 ? servicosRapidos : SERVICOS_EXPRESSOS).map(servico => {
+                  const icon = getServiceIcon(servico.nome, (servico as any).detalhes_condicao);
+                  const precoVenda = servico.preco_venda || (servico as any).preco || 0;
+
+                  return (
+                    <button
+                      key={servico.id}
+                      type="button"
+                      onClick={() => handleAddToCart({
+                        id: servico.id,
+                        nome: servico.nome,
+                        categoria: 'SERVICO_BALCAO',
+                        condicao: 'NOVO',
+                        quantidade: 99999,
+                        estoque_minimo: 0,
+                        preco_custo: servico.preco_custo || (servico as any).custo || 0,
+                        preco_venda: precoVenda,
+                        garantia_meses: 0
+                      })}
+                      className="p-2.5 rounded-2xl bg-slate-950/80 hover:bg-amber-950/40 border border-white/10 hover:border-amber-500/50 transition-all text-left flex flex-col justify-between group cursor-pointer hover:scale-[1.02] shadow-sm"
+                    >
+                      <div>
+                        <span className="text-lg block mb-1">{icon}</span>
+                        <h4 className="font-bold text-white text-[11px] leading-tight group-hover:text-amber-300 transition-colors">
+                          {servico.nome}
+                        </h4>
+                      </div>
+                      <div className="mt-2 pt-1.5 border-t border-white/5 flex items-center justify-between">
+                        <span className="text-[10px] font-black text-amber-400 font-mono">
+                          {formatCurrency(precoVenda)}
+                        </span>
+                        <span className="w-5 h-5 rounded-lg bg-amber-500/20 text-amber-300 text-[10px] font-bold flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-all">
+                          +
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -1112,6 +1238,157 @@ export const VendasPDV: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Configuração e Edição de Preços Fixos de Serviços */}
+      {showEditPrecosModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-navy-900 border border-white/10 rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl animate-slide-up text-xs">
+            
+            {/* Header Modal */}
+            <div className="flex items-center justify-between p-5 border-b border-white/10">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  <Settings className="w-5 h-5 text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">
+                    Tabela de Preços Fixos: Serviços de Balcão & Gráfica
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Edite os valores de venda e custo dos botões expressos de 1 clique do PDV
+                  </p>
+                </div>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setShowEditPrecosModal(false)}
+                className="p-1 rounded-xl text-slate-400 hover:text-white hover:bg-white/10"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Lista Editável de Serviços */}
+            <form onSubmit={handleSaveEditPrecos} className="p-5 overflow-y-auto flex-1 space-y-3">
+              <div className="space-y-2.5">
+                {servicosEditList.map((item, index) => (
+                  <div key={item.id || index} className="p-3 rounded-2xl bg-slate-950/80 border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    
+                    {/* Nome & Descrição */}
+                    <div className="flex-1 w-full space-y-1">
+                      <input
+                        type="text"
+                        required
+                        placeholder="Nome do Serviço"
+                        value={item.nome}
+                        onChange={(e) => {
+                          const updated = [...servicosEditList];
+                          updated[index].nome = e.target.value;
+                          setServicosEditList(updated);
+                        }}
+                        className="w-full px-2.5 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-white font-bold text-xs focus:border-brand-500 focus:outline-none"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Descrição curta (ex: Xerox p/ folha, Foto 3x4)"
+                        value={item.detalhes_condicao || ''}
+                        onChange={(e) => {
+                          const updated = [...servicosEditList];
+                          updated[index].detalhes_condicao = e.target.value;
+                          setServicosEditList(updated);
+                        }}
+                        className="w-full px-2.5 py-1 rounded-lg bg-slate-900/60 border border-white/5 text-slate-400 text-[11px] focus:border-brand-500 focus:outline-none"
+                      />
+                    </div>
+
+                    {/* Preço de Venda e Custo */}
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <div>
+                        <span className="text-[10px] text-slate-400 block font-semibold mb-0.5">Venda (R$)</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          required
+                          value={item.preco_venda}
+                          onChange={(e) => {
+                            const updated = [...servicosEditList];
+                            updated[index].preco_venda = parseFloat(e.target.value) || 0;
+                            setServicosEditList(updated);
+                          }}
+                          className="w-24 px-2 py-1.5 rounded-xl bg-slate-900 border border-emerald-500/30 text-emerald-400 font-mono font-bold text-xs text-right focus:border-emerald-400 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <span className="text-[10px] text-slate-400 block font-semibold mb-0.5">Custo (R$)</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={item.preco_custo}
+                          onChange={(e) => {
+                            const updated = [...servicosEditList];
+                            updated[index].preco_custo = parseFloat(e.target.value) || 0;
+                            setServicosEditList(updated);
+                          }}
+                          className="w-20 px-2 py-1.5 rounded-xl bg-slate-900 border border-white/10 text-slate-300 font-mono text-xs text-right focus:border-brand-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setServicosEditList(servicosEditList.filter((_, i) => i !== index));
+                        }}
+                        className="p-1.5 mt-4 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                        title="Remover Serviço"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+
+              {/* Botão Adicionar Novo Serviço */}
+              <button
+                type="button"
+                onClick={handleAddNewServiceRow}
+                className="w-full py-2.5 rounded-2xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-dashed border-white/15 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+              >
+                <Plus className="w-4 h-4 text-brand-400" />
+                <span>+ Adicionar Outro Serviço Rápido</span>
+              </button>
+
+              {/* Rodapé / Ações */}
+              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                <span className="text-[11px] text-slate-400">
+                  {servicosEditList.length} serviços cadastrados
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPrecosModal(false)}
+                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={savingPrecos}
+                    className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-glow-amber cursor-pointer flex items-center gap-1.5"
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    <span>{savingPrecos ? 'Salvando...' : 'Salvar Alterações'}</span>
+                  </button>
+                </div>
+              </div>
+
+            </form>
+
           </div>
         </div>
       )}
