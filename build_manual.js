@@ -122,3 +122,24 @@ ${htmlContent}
 
 fs.writeFileSync('MANUAL_DO_USUARIO_POR_CARGO.html', fullHtml);
 console.log('HTML gerado com sucesso!');
+
+// Geração automática do PDF
+try {
+  const path = require('path');
+  const htmlPath = 'file:///' + path.resolve('MANUAL_DO_USUARIO_POR_CARGO.html').replace(/\\/g, '/');
+  const pdfPath = path.resolve('MANUAL_DO_USUARIO_POR_CARGO.pdf');
+
+  const edgePaths = [
+    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+    'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+  ];
+
+  let browserPath = edgePaths.find(p => fs.existsSync(p));
+  if (browserPath) {
+    execSync(`powershell -Command "Start-Process '${browserPath}' -ArgumentList '--headless', '--disable-gpu', '--no-pdf-header-footer', '--print-to-pdf=${pdfPath}', '${htmlPath}' -Wait"`);
+    console.log('PDF gerado com sucesso: MANUAL_DO_USUARIO_POR_CARGO.pdf');
+  }
+} catch (e) {
+  console.log('Aviso ao gerar PDF:', e.message);
+}
