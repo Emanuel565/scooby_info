@@ -257,7 +257,7 @@ export const getAdminReports = async (req: AuthRequest, res: Response): Promise<
       };
     }).sort((a, b) => b.faturamento - a.faturamento);
 
-    // 4. Desempenho por Técnico - Inclui TODOS os técnicos cadastrados
+    // 4. Desempenho por Técnico - Inclui TODOS os técnicos cadastrados com tempo de bancada
     const allStaff = await prisma.usuario.findMany({
       where: {
         cargo: { in: ['TECNICO', 'TECNICO_CELULAR', 'ADMIN', 'GERENTE', 'TRAINEE'] }
@@ -333,9 +333,116 @@ export const getAdminReports = async (req: AuthRequest, res: Response): Promise<
       }
     });
 
-    const desempenhoTecnicos = Object.values(tecnicoMap).sort((a, b) => b.faturamento - a.faturamento || b.totalOS - a.totalOS);
+    const desempenhoTecnicos = Object.values(tecnicoMap).map(t => ({
+      ...t,
+      tempoMedioSegundos: t.totalOS > 0 ? Math.round(t.tempoTotalSegundos / t.totalOS) : 0
+    })).sort((a, b) => b.faturamento - a.faturamento || b.totalOS - a.totalOS);
 
-    // 5. Relatório Estruturado
+    // 5. Relatório Completo de Vendas dos Atendentes / Balcão & O que Venderam
+    const vendasPeriodo = await prisma.venda.findMany({
+      where: whereDateFilter,
+      include: {
+        vendedor: { select: { id: true, nome: true, cargo: true } },
+        itens: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const totalVendidoBalcao = vendasPeriodo.reduce((acc, v) => acc + (v.valor_total || 0), 0);
+    const lucroTotalVendasBalcao = vendasPeriodo.reduce((acc, v) => acc + (v.lucro_total || 0), 0);
+    const quantidadeTotalVendasBalcao = vendasPeriodo.length;
+
+    const allAtendentes = await prisma.usuario.findMany({
+      where: {
+        cargo: { in: ['ATENDENTE', 'ADMIN', 'GERENTE'] }
+      },
+      select: { id: true, nome: true, cargo: true }
+    });
+
+    const atendenteMap: Record<number, {
+      id: number;
+      nome: string;
+      cargo: string;
+      totalVendas: number;
+      faturamento: number;
+      lucroLiquido: number;
+      ticketMedio: number;
+      itensVendidos: Record<string, { nome: string; quantidade: number; faturamento: number; lucro: number }>;
+      vendasRecentes: any[];
+    }> = {};
+
+    allAtendentes.forEach(staff => {
+      atendenteMap[staff.id] = {
+        id: staff.id,
+        nome: staff.nome,
+        cargo: staff.cargo,
+        totalVendas: 0,
+        faturamento: 0,
+        lucroLiquido: 0,
+        ticketMedio: 0,
+        itensVendidos: {},
+        vendasRecentes: []
+      };
+    });
+
+    vendasPeriodo.forEach(v => {
+      const vId = v.vendedor_id;
+      if (!vId) return;
+
+      if (!atendenteMap[vId]) {
+        atendenteMap[vId] = {
+          id: vId,
+          nome: v.vendedor?.nome || 'Atendente',
+          cargo: v.vendedor?.cargo || 'ATENDENTE',
+          totalVendas: 0,
+          faturamento: 0,
+          lucroLiquido: 0,
+          ticketMedio: 0,
+          itensVendidos: {},
+          vendasRecentes: []
+        };
+      }
+
+      atendenteMap[vId].totalVendas += 1;
+      atendenteMap[vId].faturamento += v.valor_total;
+      atendenteMap[vId].lucroLiquido += v.lucro_total;
+      atendenteMap[vId].vendasRecentes.push({
+        id: v.id,
+        codigo_venda: v.codigo_venda,
+        cliente_nome: v.cliente_nome,
+        forma_pagamento: v.forma_pagamento,
+        valor_total: v.valor_total,
+        lucro_total: v.lucro_total,
+        totalItens: v.itens.length,
+        createdAt: v.createdAt
+      });
+
+      v.itens.forEach(it => {
+        const pNome = it.nome_produto;
+        if (!atendenteMap[vId].itensVendidos[pNome]) {
+          atendenteMap[vId].itensVendidos[pNome] = {
+            nome: pNome,
+            quantidade: 0,
+            faturamento: 0,
+            lucro: 0
+          };
+        }
+        atendenteMap[vId].itensVendidos[pNome].quantidade += it.quantidade;
+        atendenteMap[vId].itensVendidos[pNome].faturamento += it.subtotal;
+        atendenteMap[vId].itensVendidos[pNome].lucro += (it.subtotal - (it.preco_custo * it.quantidade));
+      });
+    });
+
+    const desempenhoAtendentes = Object.values(atendenteMap).map(a => ({
+      ...a,
+      ticketMedio: a.totalVendas > 0 ? a.faturamento / a.totalVendas : 0,
+      itensLista: Object.values(a.itensVendidos).sort((x, y) => y.quantidade - x.quantidade)
+    })).sort((a, b) => b.faturamento - a.faturamento || b.totalVendas - a.totalVendas);
+
+    // 6. Relatório Estruturado com Totais Consolidados (OS + Vendas Balcão)
+    const faturamentoGeralConsolidado = faturamentoTotal + totalVendidoBalcao;
+    const lucroGeralConsolidado = lucroLiquidoTotal + lucroTotalVendasBalcao;
+
     const reportResult = {
       periodo: {
         tipo: periodo || 'semanal',
@@ -354,10 +461,29 @@ export const getAdminReports = async (req: AuthRequest, res: Response): Promise<
         lucroLiquidoTotal,
         margemLucro,
         ticketMedio,
-        taxaAprovacao: totalCriadas > 0 ? (((concluidas.length + emAndamentoCount) / totalCriadas) * 100).toFixed(1) : '100'
+        taxaAprovacao: totalCriadas > 0 ? (((concluidas.length + emAndamentoCount) / totalCriadas) * 100).toFixed(1) : '100',
+        totalVendidoBalcao,
+        lucroTotalVendasBalcao,
+        quantidadeTotalVendasBalcao,
+        faturamentoGeralConsolidado,
+        lucroGeralConsolidado
       },
       faturamentoPorEquipamento,
       desempenhoTecnicos,
+      desempenhoAtendentes,
+      vendasPeriodo: vendasPeriodo.map(v => ({
+        id: v.id,
+        codigo_venda: v.codigo_venda,
+        cliente_nome: v.cliente_nome,
+        cliente_telefone: v.cliente_telefone,
+        forma_pagamento: v.forma_pagamento,
+        valor_total: v.valor_total,
+        lucro_total: v.lucro_total,
+        vendedor: v.vendedor?.nome || 'Balcão',
+        totalItens: v.itens.length,
+        itens: v.itens,
+        createdAt: v.createdAt
+      })),
       ordensConcluidas: concluidas.map(o => {
         const techFinal = o.concluido_por?.nome || o.tecnico?.nome || 'Técnico';
         const vFinal = o.valor_final || o.orcamento_valor || 0;
@@ -373,6 +499,7 @@ export const getAdminReports = async (req: AuthRequest, res: Response): Promise<
           valor_final: vFinal,
           custo_pecas: cPecas,
           lucro_liquido: lLiq,
+          tempo_bancada_segundos: o.tempo_bancada_segundos || 0,
           status: o.status,
           tecnico: techFinal,
           concluido_por: techFinal,
