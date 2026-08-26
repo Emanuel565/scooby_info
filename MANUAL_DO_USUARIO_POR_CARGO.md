@@ -7,15 +7,17 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
 
 ## 📑 Sumário de Módulos:
 1. [💼 Perfil: Atendente de Balcão & Recepção](#-1-perfil-atendente-de-balcão--recepção)
-2. [🔧 Perfil: Técnico Especialista (Notebook, PC, Impressora)](#-2-perfil-técnico-especialista)
-3. [📱 Perfil: Técnico Celulares & Consoles (Híbrido)](#-3-perfil-técnico-celulares--consoles)
-4. [🎓 Perfil: Técnico Trainee (Em Treinamento)](#-4-perfil-técnico-trainee-em-treinamento)
-5. [🛡️ Perfil: Gerente de Oficina (Triagem & Kanban)](#-5-perfil-gerente-de-oficina-triagem--kanban)
-6. [👑 Perfil: Administrador Geral (Gestão, Estoque & Faturamento)](#-6-perfil-administrador-geral)
-7. [📸 Galeria de Fotos do Equipamento & Rastreio por QR Code](#-7-galeria-de-fotos-do-equipamento--rastreio-por-qr-code)
-8. [⏱️ Gestão e Auditoria de Tempo de Bancada](#-8-gestão-e-auditoria-de-tempo-de-bancada)
-9. [💬 Recursos Compartilhados: Scooby Chat & Interfone de Voz](#-9-recursos-compartilhados-chat--interfone-de-voz)
-10. [📊 Tabela Comparativa de Permissões](#-10-tabela-resumo-de-permissões)
+2. [⚡ Serviços Rápidos de Balcão & PDV Expresso](#-2-serviços-rápidos-de-balcão--pdv-expresso)
+3. [🔧 Perfil: Técnico Especialista (Notebook, PC, Impressora)](#-3-perfil-técnico-especialista)
+4. [📱 Perfil: Técnico Celulares & Consoles (Híbrido)](#-4-perfil-técnico-celulares--consoles)
+5. [🎓 Perfil: Técnico Trainee (Em Treinamento)](#-5-perfil-técnico-trainee-em-treinamento)
+6. [🛡️ Perfil: Gerente de Oficina (Triagem & Kanban)](#-6-perfil-gerente-de-oficina-triagem--kanban)
+7. [👑 Perfil: Administrador Geral (Gestão, Estoque & Faturamento)](#-7-perfil-administrador-geral)
+8. [📊 Relatórios Gerenciais: Atendentes & Tempo de Bancada](#-8-relatórios-gerenciais-avançados)
+9. [📸 Galeria de Fotos do Equipamento & Rastreio por QR Code](#-9-galeria-de-fotos-do-equipamento--rastreio-por-qr-code)
+10. [🖥️ Instalação no Windows Server & Rotina de Backups](#-10-instalação-no-windows-server--rotina-de-backups)
+11. [💬 Recursos Compartilhados: Scooby Chat & Interfone de Voz](#-11-recursos-compartilhados-chat--interfone-de-voz)
+12. [📋 Tabela Comparativa de Permissões](#-12-tabela-resumo-de-permissões)
 
 ---
 
@@ -23,6 +25,7 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
 
 ### 🎯 Principais Atribuições:
 * Recepção do cliente e abertura de chamados técnicos.
+* **Digitação Manual / Retroativa de OS:** Opção de manter números sequenciais do Bling ou sistemas antigos com data e hora personalizadas.
 * **Registro fotográfico de entrada** do equipamento (avarias, riscos e acessórios).
 * Aplicação do prazo padrão de 3 dias úteis.
 * Disparo de orçamentos e avisos de pronto pelo WhatsApp.
@@ -30,8 +33,9 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
 * Correção de cadastros (Edição e Exclusão de OSs).
 
 ### 🚀 Passo a Passo no Balcão:
-1. **Abrir Nova Ordem de Serviço com Fotos:**
+1. **Abrir Nova Ordem de Serviço (Padrão ou Importação Manual):**
    * Faça login e clique no botão **"+ Nova Ordem de Serviço"**.
+   * **Importação Manual / Sequencial do Bling (Opcional):** Marque a caixa *"Digitar número de OS manualmente (Importar do Bling)"*. O sistema libera a edição do número da OS (ex: `OS-1045`) e os campos de **Data e Hora Retroativa**.
    * Digite o **Nome** e **Telefone / WhatsApp** do cliente.
    * Selecione o tipo de equipamento (*Notebook, Smartphone, PC Desktop, Console, Impressora*) e modelo.
    * **Anexar Fotos de Entrada (Opcional):** Clique em **`+ Tirar / Anexar Fotos`** para fotografar o aparelho com a câmera do celular/tablet ou enviar imagens da galeria.
@@ -39,28 +43,48 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
    * **Prazo Automático de 3 Dias:** O sistema já preenche a data para 3 dias úteis. Use os atalhos `⚡ 1 dia`, `⭐ 3 dias`, `🔧 5 dias` ou escolha qualquer data personalizada.
    * Clique em **"Criar Ordem de Serviço"** e imprima a via do cliente com o **QR Code** de rastreio.
 
-2. **🛒 Efetuar Vendas Diretas no Balcão (PDV):**
-   * Clique em **`Venda Balcão (PDV)`** no topo da tela.
-   * Selecione qualquer produto cadastrado (SSDs, memórias, cabos, carregadores, notebooks usados revisados, etc.).
-   * Filtre por **✨ Produtos Novos** ou **🏷️ Usados / Seminovos**.
-   * Escolha a forma de pagamento (**Dinheiro com cálculo de troco, PIX, Cartão Débito ou Crédito**).
-   * Clique em **"Finalizar Venda & Imprimir"** para emitir o comprovante térmico (com termo de garantia) e enviar por WhatsApp.
-
-3. **Enviar Mensagens de WhatsApp:**
+2. **Enviar Mensagens de WhatsApp com 1 Clique:**
    * Clique em qualquer OS para abrir os detalhes.
-   * Utilize os botões com 1 clique:
+   * Utilize os botões automáticos:
      * `📋 Enviar Orçamento` (Dispara laudo e valor aprovado)
      * `🎉 Avisar: Pronto!` (Notifica que o aparelho pode ser retirado)
      * `📦 Avisar Peça` (Informa que a peça está em trânsito)
      * `🧪 Avisar Testes` (Informa que o aparelho está na fase final de testes)
 
-4. **Editar ou Excluir OS:**
+3. **Editar ou Excluir OS:**
    * Se cometeu algum erro na digitação, clique em **"Editar OS"** para alterar cliente, modelo, defeito ou valores.
    * Se o cliente desistir no balcão antes do início, clique em **"Excluir"**.
 
 ---
 
-## 🔧 2. Perfil: Técnico Especialista
+## ⚡ 2. Serviços Rápidos de Balcão & PDV Expresso
+
+O **Módulo de Venda Balcão (PDV)** foi projetado para agilidade máxima no atendimento diário da loja:
+
+### 🚀 Recursos do PDV:
+1. **Grid de Serviços Rápidos (1 Clique):**
+   * Botões instantâneos para:
+     * 📄 **Impressão Preto & Branco**
+     * 🎨 **Impressão Colorida**
+     * 💼 **Elaboração / Impressão de Currículo**
+     * 🖼️ **Montagem / Edição de Fotos (3x4)**
+     * 📑 **Digitalização / Scanner**
+     * 🛡️ **Aplicação de Película**
+     * 💾 **Backup de Dados / Pen Drive**
+     * 🔌 **Desobstrução / Limpeza de Conector**
+2. **Atalhos de Quantidade Rápida:**
+   * No carrinho, use os botões `+5`, `+10` e `+20` para somar cópias de impressão rapidamente sem precisar digitar.
+3. **Item / Serviço Avulso:**
+   * Clique em **`+ Item / Serviço Avulso`** para lançar qualquer produto ou serviço especial na hora, digitando o nome e o valor livremente.
+4. **⚙️ Tabela de Preços Fixos Editáveis (Admin / Gerente):**
+   * Administradores e Gerentes possuem o botão **`⚙️ Editar Preços Fixos`** no topo do painel para alterar valores de venda, custos e cadastrar novos serviços padrão salvos no banco.
+5. **Formas de Pagamento & Comprovante Térmico:**
+   * Dinheiro (com cálculo automático de troco), PIX, Cartão Débito e Cartão Crédito.
+   * Emissão de comprovante térmico e envio direto no WhatsApp do cliente com discriminação clara de serviços vs. produtos com garantia.
+
+---
+
+## 🔧 3. Perfil: Técnico Especialista
 
 ### 🎯 Principais Atribuições:
 * Diagnóstico de hardware, eletrônica de bancada e reparo de circuitos.
@@ -90,7 +114,7 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
 
 ---
 
-## 📱 3. Perfil: Técnico Celulares & Consoles
+## 📱 4. Perfil: Técnico Celulares & Consoles
 
 ### 🎯 Principais Atribuições:
 * Manutenção rápida de smartphones, tablets, controles e videogames.
@@ -105,7 +129,7 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
 
 ---
 
-## 🎓 4. Perfil: Técnico Trainee (Em Treinamento)
+## 🎓 5. Perfil: Técnico Trainee (Em Treinamento)
 
 ### 🎯 Principais Atribuições:
 * Execução de manutenções de nível inicial sob supervisão (formatação, limpeza preventiva, troca de periféricos e testes de estresse).
@@ -120,7 +144,7 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
 
 ---
 
-## 🛡️ 5. Gerente de Oficina (Triagem & Kanban)
+## 🛡️ 6. Gerente de Oficina (Triagem & Kanban)
 
 ### 🎯 Principais Atribuições:
 * Gestão visual do fluxo de trabalho através do Painel Kanban.
@@ -135,53 +159,68 @@ Este documento é o guia oficial de operação do **Scooby OS**, detalhando o pa
 
 ---
 
-## 👑 6. Administrador Geral
+## 👑 7. Administrador Geral
 
 ### 🎯 Principais Atribuições:
-* Apuração de faturamento bruto, custos de estoque e lucro líquido real (Sigilo Exclusivo).
-* **Auditoria de Produtividade:** Acompanhamento do tempo que cada técnico dedica a cada chamado.
+* Apuração de faturamento consolidado, custos de estoque e lucro líquido real (Sigilo Exclusivo).
+* **Auditoria de Produtividade & Tempo:** Acompanhamento do tempo que cada técnico dedica a cada chamado e quanto cada atendente vendeu.
 * Cadastro e gestão de equipe (cargos, senhas e permissões).
-* Controle de catálogo de peças e estoque com alertas de reposição.
-* Manutenção do servidor, backups e infraestrutura de alta escala (Redis e Cache).
+* Controle de catálogo de peças, estoque de novos/usados e serviços com alertas de reposição.
+* Manutenção do servidor, rotina de backups e infraestrutura de alta escala.
 
 ### 🚀 Passo a Passo Administrativo:
-1. **Faturamento & Relatórios:** Acesse `/admin/relatorios` para ver a receita total, margem de lucro % e gráficos de desempenho financeiro.
-2. **Auditoria de Bancada:** Veja no detalhe de cada OS o banner com o **Tempo Total Trabalhado em Bancada** pelo técnico.
+1. **Faturamento & Relatórios:** Acesse `/admin/relatorios` para ver a receita consolidada, lucro real, desempenho de vendas por atendente e produtividade técnica.
+2. **Auditoria de Bancada:** Veja no extrato detalhado de cada OS a coluna com o **Tempo Exato Trabalhado em Bancada**.
 3. **Gerenciar Usuários:** Acesse `/admin/usuarios` para criar novos logins, definir cargos (*Admin, Gerente, Atendente, Técnico, Trainee*) e resetar senhas.
-4. **Controle de Estoque:** Acesse `/admin/estoque` para cadastrar peças, valores de custo/venda e alertas de estoque mínimo.
+4. **Estoque de Novos & Usados:** Acesse `/admin/estoque` para cadastrar peças, notebooks seminovos, emitir relatórios e baixar/enviar planilhas Excel.
 
 ---
 
-## 📸 7. Galeria de Fotos do Equipamento & Rastreio por QR Code
+## 📊 8. Relatórios Gerenciais Avançados
 
-O Scooby OS conta com um sistema de registro fotográfico integrado:
+O módulo de relatórios (`/admin/relatorios`) traz controle total da operação:
 
-1. **Como Funciona o QR Code do Cliente:**
-   * Toda OS impressa contém um QR Code exclusivo.
-   * Ao apontar a câmera do celular para o QR Code, o cliente acessa a página pública de rastreio (`/consulta/:codigo`).
-2. **Visualização das Fotos pelo Cliente:**
-   * O cliente acompanha a linha do tempo do reparo e pode visualizar a **Galeria de Fotos do Equipamento** (fotos da entrada, circuito interno e reparo finalizado).
-   * Clicando na foto, abre-se um visualizador ampliado em alta resolução (*lightbox*).
-3. **Segurança e Confiança:**
-   * Aumenta a transparência dos serviços, comprova o defeito pré-existente e valoriza o trabalho técnico da oficina.
+### 🛍️ A. Relatório de Vendas por Atendente:
+* Faturamento total e lucro gerado por cada atendente/vendedor no período.
+* Botão **"Ver O Que Vendeu"**: abre o detalhamento com a lista exata de quais produtos e serviços cada atendente vendeu, quantidades e valores individuais.
 
----
+### ⏱️ B. Produtividade Técnica & Tempo de Bancada:
+* Tempo total acumulado pelo técnico em horas e minutos.
+* Tempo médio por conserto (`ex: 45min / OS`).
+* Tempo exato registrado no cronômetro em cada ordem de serviço finalizada.
 
-## ⏱️ 8. Gestão e Auditoria de Tempo de Bancada
-
-1. **Cronômetro Integrado:**
-   * Presente no modal de bancada de cada técnico (`▶ Iniciar / ⏸ Pausar`).
-   * Acumula os segundos trabalhados mesmo se a OS for pausada e retomada em outro dia.
-2. **Registro nos Logs de Histórico:**
-   * Toda vez que o laudo é salvo, o sistema gera uma entrada no histórico:
-     > *"Laudo e bancada atualizados por Emanuel. Tempo de bancada registrado: 1h 15m (75 min). Total: R$ 350,00"*
-3. **Painel de Gestão para Administradores:**
-   * No modal de detalhes da OS, administradores e gerentes visualizam o card destacado:
-     > **⏱️ Tempo Trabalhado na Bancada:** `1h 24m 30s` *(84 min registrados)* • Técnico: `Emanuel Carvalho`
+### 💰 C. Faturamento Consolidado:
+* Visão global somando faturamento e lucro líquido de **Ordens de Serviço + Vendas Balcão**.
 
 ---
 
-## 💬 9. Recursos Compartilhados: Chat & Interfone de Voz
+## 📸 9. Galeria de Fotos do Equipamento & Rastreio por QR Code
+
+1. **Galeria de Fotos:**
+   * Tanto atendentes quanto técnicos podem anexar até 5 fotos por OS (fotos de entrada, avarias, placas, circuitos e testes).
+   * As fotos são compactadas automaticamente para economizar espaço e carregar instantaneamente.
+2. **Rastreio por QR Code:**
+   * O comprovante impresso contém um QR Code exclusivo para o cliente escanear no celular e acompanhar o status do reparo em tempo real.
+
+---
+
+## 🖥️ 10. Instalação no Windows Server & Rotina de Backups
+
+Para rodar o Scooby OS 24/7 na rede local da empresa:
+
+1. **Instalação em 1 Clique:**
+   * Execute o arquivo **`INSTALAR_WINDOWS_SERVER.bat`** como Administrador no servidor.
+   * O script configura o banco PostgreSQL 16, Redis 7, compila o frontend, libera a **porta 3001 no Firewall** e agenda backups diários.
+2. **Backups Automáticos:**
+   * Diariamente às **19:00h**, o script `GERAR_BACKUP_BANCO.bat` salva uma cópia `.sql` na pasta `backups/`, mantendo os últimos 30 dias.
+3. **Restauração Rápida:**
+   * Em caso de necessidade, execute **`RESTAURAR_BACKUP_BANCO.bat`** e escolha a cópia desejada.
+4. **Atualizações Sem Perder Dados:**
+   * Execute **`ATUALIZAR_SISTEMA_SEM_PERDER_DADOS.bat`** para baixar melhorias do GitHub sem alterar cadastros ou histórico.
+
+---
+
+## 💬 11. Recursos Compartilhados: Chat & Interfone de Voz
 
 * **Onde acessar:** Botão **`💬 Chat & Voz`** presente no canto superior de todas as telas.
 * **Canais:**
@@ -192,44 +231,22 @@ O Scooby OS conta com um sistema de registro fotográfico integrado:
 
 ---
 
-## 🛒 10. Ponto de Venda Balcão (PDV) & Produtos Novos e Usados
-
-O Scooby OS conta com um módulo de PDV de alta performance:
-
-1. **Venda Direta Sem Necessidade de OS:**
-   * Indicado para vendas rápidas de balcão (carregadores, cabos, SSDs, memórias, periféricos e notebooks seminovos).
-2. **Controle de Produtos Novos e Usados:**
-   * **✨ Novos:** Produtos lacrados com garantia integral.
-   * **🏷️ Usados / Seminovos:** Equipamentos revisados (Notebooks, Placas-mãe, Placas de Vídeo) com rastreamento por **Nº de Série / IMEI**, detalhes estéticos e garantia legal de 90 dias.
-3. **Emissão de Comprovante & Envio por WhatsApp:**
-   * Impressão de cupom térmico não fiscal (80mm) ou A4 com termo de garantia.
-   * Botão com 1 clique para disparar o resumo da compra diretamente no WhatsApp do cliente.
-
----
-
-## 📊 11. Importação e Exportação de Planilhas Excel (.xlsx / .csv)
-
-1. **Migração em Massa de Produtos:**
-   * No menu **Estoque & Peças**, clique em **`📥 Importar Excel / CSV`**.
-   * Selecione a planilha da sua loja anterior. O sistema mapeia automaticamente *Nome, Categoria, Condição, Quantidade, Custo, Venda e Localização*.
-   * Visualize a tabela prévia antes de confirmar a importação para o banco de dados.
-2. **Exportação de Inventário Completo:**
-   * Clique em **`📤 Exportar Excel`** para baixar a qualquer momento o arquivo `.xlsx` completo para balanço financeiro e contabilidade.
-
----
-
 ## 📋 12. Tabela Resumo de Permissões
 
-| Funcionalidade | Atendente | Trainee | Técnico | Gerente | Admin |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Abrir Novas OSs (com Fotos)** | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim |
-| **Bancada Técnica & Cronômetro** | ❌ Não | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim |
-| **Editar & Excluir OS** | ✅ Sim | ❌ Não | ❌ Não | ✅ Sim | ✅ Sim |
-| **Disparar Mensagens WhatsApp** | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim |
-| **Painel Kanban Geral** | ❌ Não | ❌ Não | ❌ Não | ✅ Sim | ✅ Sim |
-| **Auditoria de Tempo de Bancada** | ❌ Não | ❌ Não | ❌ Não | ✅ Sim | 👑 Completa |
-| **Faturamento & Lucro Real** | ❌ Sigilo | ❌ Sigilo | ❌ Sigilo | ❌ Sigilo | 👑 Exclusivo |
-| **Gerenciar Usuários & Senhas** | ❌ Não | ❌ Não | ❌ Não | ❌ Não | 👑 Exclusivo |
+| Funcionalidade | Atendente | Trainee | Técnico | Técnico Celular | Gerente | Administrador |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Abrir Novas OSs (com Fotos)** | ✅ Sim | ✅ Sim | ❌ Não | ✅ Sim | ✅ Sim | ✅ Sim |
+| **Digitação Manual / Retroativa de OS** | ✅ Sim | ❌ Não | ❌ Não | ✅ Sim | ✅ Sim | ✅ Sim |
+| **Venda Balcão (PDV Expresso)** | ✅ Sim | ❌ Não | ❌ Não | ❌ Não | ✅ Sim | ✅ Sim |
+| **Editar Preços Fixos de Serviços** | ❌ Não | ❌ Não | ❌ Não | ❌ Não | ✅ Sim | ✅ Sim |
+| **Minha Bancada & Cronômetro** | ❌ Não | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim |
+| **Anexar Fotos Técnicas** | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim | ✅ Sim |
+| **Painel Kanban Geral (Triagem)** | ❌ Não | ❌ Não | ❌ Não | ❌ Não | ✅ Sim | ✅ Sim |
+| **Auditoria de Tempo de Bancada** | ❌ Não | ❌ Não | ❌ Não | ❌ Não | ✅ Sim | 👑 Completa |
+| **Relatórios de Atendentes & Vendas** | ❌ Não | ❌ Não | ❌ Não | ❌ Não | ❌ Não | 👑 Exclusivo |
+| **Faturamento & Lucro Real** | ❌ Sigilo | ❌ Sigilo | ❌ Sigilo | ❌ Sigilo | ❌ Sigilo | 👑 Exclusivo |
+| **Gerenciar Usuários & Senhas** | ❌ Não | ❌ Não | ❌ Não | ❌ Não | ❌ Não | 👑 Exclusivo |
+| **Importar / Exportar Estoque Excel** | ❌ Não | ❌ Não | ❌ Não | ❌ Não | ❌ Não | 👑 Exclusivo |
 
 ---
 *Documento oficial desenvolvido por Emanuel Carvalho • Scooby Assistência Técnica.*
