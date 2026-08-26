@@ -1,7 +1,8 @@
 @echo off
 title PREPARAR PACOTE PARA PEN DRIVE - SCOOBY OS
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$dest = Join-Path $env:USERPROFILE 'Desktop\SCOOBY_PENDRIVE';" ^
+  "$activeDesktop = [Environment]::GetFolderPath('Desktop');" ^
+  "$dest = Join-Path $activeDesktop 'SCOOBY_PENDRIVE';" ^
   "if (Test-Path $dest) { Remove-Item -Recurse -Force $dest };" ^
   "New-Item -ItemType Directory -Path (Join-Path $dest 'backups') -Force | Out-Null;" ^
   "Write-Host '============================================================' -ForegroundColor Cyan;" ^
@@ -25,6 +26,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "Write-Host ('SUCESSO! Pasta pronta no seu Desktop: ' + $dest) -ForegroundColor Green;" ^
   "Write-Host ('Tamanho Total: ' + [Math]::Round($size, 2) + ' MB') -ForegroundColor Yellow;" ^
   "Write-Host 'Basta copiar a pasta SCOOBY_PENDRIVE para o seu Pen Drive!' -ForegroundColor Cyan;" ^
-  "Write-Host '============================================================' -ForegroundColor Cyan;"
+  "Write-Host '============================================================' -ForegroundColor Cyan;" ^
+  "Start-Process explorer.exe -ArgumentList $dest;"
 echo.
 pause
