@@ -425,6 +425,14 @@ export const importDefaultEstoqueItems = async (req: AuthRequest, res: Response)
 
     invalidateEstoqueCache();
 
+    res.json({
+      message: `Catálogo importado com sucesso! ${criados} novos produtos (Novos e Usados) cadastrados.`,
+      totalImportados: criados
+    });
+  } catch (error) {
+    console.error('Erro ao importar itens padrão de estoque:', error);
+    res.status(500).json({ error: 'Erro ao importar itens padrão.' });
+  }
 };
 
 // Lista serviços de balcão pré-configurados (ou padrões caso ainda não cadastrados no banco)
