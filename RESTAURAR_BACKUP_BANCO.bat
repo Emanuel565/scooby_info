@@ -1,54 +1,37 @@
 @echo off
-chcp 65001 >nul
-title RESTAURAÇÃO DE BACKUP - SCOOBY OS
+setlocal
+cd /d "%~dp0"
+title RESTAURADOR DE BACKUP - SCOOBY OS
 
 echo ==============================================================================
-echo        ⚠️ SCOOBY OS - RESTAURADOR DE BACKUP POSTGRESQL
+echo        SCOOBY OS - RESTAURADOR DE BACKUP POSTGRESQL
 echo ==============================================================================
-echo  ATENÇÃO: Este procedimento irá substituir os dados atuais do banco
+echo  ATENCAO: Este procedimento ira substituir os dados atuais do banco
 echo  pelo arquivo de backup selecionado!
 echo ==============================================================================
 echo.
 
 if not exist "%~dp0backups" (
-    echo [X] Pasta de backups não encontrada.
+    echo [ERRO] Pasta de backups nao encontrada.
     pause
     exit /b
 )
 
-echo Backups disponíveis na pasta 'backups':
-echo ------------------------------------------------------------------------------
-dir /b /o-d "%~dp0backups\*.sql"
-echo ------------------------------------------------------------------------------
-echo.
-set /p ARQUIVO="Digite o nome exato do arquivo .sql para restaurar: "
-
-if not exist "%~dp0backups\%ARQUIVO%" (
-    echo.
-    echo [X] Arquivo não encontrado na pasta backups!
-    pause
-    exit /b
-)
-
-echo.
-set /p CONFIRMA="Tem certeza absoluta que deseja restaurar '%ARQUIVO%'? (DIGITE 'SIM'): "
-if /i not "%CONFIRMA%"=="SIM" (
-    echo Operação cancelada pelo usuário.
-    pause
-    exit /b
-)
-
-echo.
-echo [*] Restaurando banco de dados a partir do arquivo...
-docker exec -i scooby_postgres psql -U postgres -d scoobydb < "%~dp0backups\%ARQUIVO%"
-
-if %errorLevel% equ 0 (
-    echo.
-    echo [✓] BANCO DE DADOS RESTAURADO COM SUCESSO!
-) else (
-    echo.
-    echo [X] Ocorreu um erro durante a restauração.
-)
+powershell -NoProfile -Command ^
+  "$backups = Get-ChildItem '%~dp0backups\*.sql' | Sort-Object CreationTime -Descending;" ^
+  "if ($backups.Count -eq 0) { Write-Host '[AVISO] Nenhum arquivo .sql encontrado em backups/' -ForegroundColor Yellow; exit };" ^
+  "Write-Host 'Backups disponiveis na pasta backups/:' -ForegroundColor Cyan;" ^
+  "for ($i = 0; $i -lt $backups.Count; $i++) { Write-Host ('  [' + ($i + 1) + '] ' + $backups[$i].Name + ' (' + [Math]::Round($backups[$i].Length / 1KB, 1) + ' KB)') };" ^
+  "$choice = Read-Host 'Digite o numero do backup que deseja restaurar (ou ENTER para cancelar)';" ^
+  "if ($choice -match '^\d+$' -and [int]$choice -ge 1 -and [int]$choice -le $backups.Count) {" ^
+  "    $selected = $backups[[int]$choice - 1].FullName;" ^
+  "    $confirma = Read-Host ('Digite SIM para confirmar a restauracao de ' + $backups[[int]$choice - 1].Name);" ^
+  "    if ($confirma.ToUpper() -eq 'SIM') {" ^
+  "        Write-Host '[*] Restaurando banco de dados no PostgreSQL...' -ForegroundColor Cyan;" ^
+  "        Get-Content $selected -Raw | docker exec -i scooby_postgres psql -U postgres -d scoobydb;" ^
+  "        Write-Host '[OK] BANCO DE DADOS RESTAURADO COM SUCESSO!' -ForegroundColor Green;" ^
+  "    } else { Write-Host 'Operacao cancelada pelo usuario.' -ForegroundColor Yellow; }" ^
+  "} else { Write-Host 'Operacao cancelada.' -ForegroundColor Yellow; }"
 
 echo.
 pause
