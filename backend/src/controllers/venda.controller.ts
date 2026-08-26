@@ -63,13 +63,17 @@ export const createVenda = async (req: AuthRequest, res: Response): Promise<void
       let numSerie = it.numero_serie ? String(it.numero_serie).trim() : null;
       let garantiaMeses = it.garantia_meses !== undefined ? parseInt(it.garantia_meses) : (condicao === 'USADO' ? 3 : 12);
 
-      if (estoqueId) {
+      const isServico = it.is_servico || it.categoria === 'SERVICO_BALCAO' || it.categoria === 'SERVICO' || it.tipo === 'SERVICO';
+
+      if (estoqueId && !isServico) {
         const itemDb = await prisma.itemEstoque.findUnique({
           where: { id: Number(estoqueId) }
         });
 
         if (itemDb) {
-          if (itemDb.quantidade < qtd) {
+          const isItemServico = itemDb.categoria === 'SERVICO_BALCAO' || itemDb.categoria === 'SERVICO';
+          
+          if (!isItemServico && itemDb.quantidade < qtd) {
             res.status(400).json({
               error: `Estoque insuficiente para "${itemDb.nome}". Saldo disponível: ${itemDb.quantidade}, Solicitado: ${qtd}.`
             });
@@ -82,13 +86,15 @@ export const createVenda = async (req: AuthRequest, res: Response): Promise<void
           numSerie = itemDb.numero_serie || numSerie;
           garantiaMeses = itemDb.garantia_meses;
 
-          // Baixa imediata de estoque
-          await prisma.itemEstoque.update({
-            where: { id: itemDb.id },
-            data: {
-              quantidade: Math.max(0, itemDb.quantidade - qtd)
-            }
-          });
+          // Baixa imediata de estoque apenas se for produto físico
+          if (!isItemServico) {
+            await prisma.itemEstoque.update({
+              where: { id: itemDb.id },
+              data: {
+                quantidade: Math.max(0, itemDb.quantidade - qtd)
+              }
+            });
+          }
         }
       }
 

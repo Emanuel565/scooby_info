@@ -28,15 +28,20 @@ export const PrintVendaModal: React.FC<PrintVendaModalProps> = ({ venda, onClose
   };
 
   const cleanPhone = (venda.cliente_telefone || '').replace(/\D/g, '');
-  const itensResumo = venda.itens.map(i => `• ${i.quantidade}x ${i.nome_produto} (${i.condicao === 'USADO' ? 'Usado' : 'Novo'}) - ${formatCurrency(i.subtotal)}`).join('\n');
+  const itensResumo = venda.itens.map(i => {
+    const isServ = i.garantia_meses === 0 || i.nome_produto.toLowerCase().includes('impress') || i.nome_produto.toLowerCase().includes('curr') || i.nome_produto.toLowerCase().includes('foto');
+    const tipoLabel = isServ ? 'Serviço' : i.condicao === 'USADO' ? 'Usado' : 'Novo';
+    return `• ${i.quantidade}x ${i.nome_produto} (${tipoLabel}) - ${formatCurrency(i.subtotal)}`;
+  }).join('\n');
+
   const msgWhatsApp = encodeURIComponent(
     `Olá, *${venda.cliente_nome || 'Cliente'}*! Aqui está o comprovante da sua compra na *Scooby Assistência Técnica*:\n\n` +
     `🧾 *Venda:* ${venda.codigo_venda}\n` +
     `📅 *Data:* ${formatDate(venda.createdAt)}\n` +
     `💳 *Pagamento:* ${getFormaPagtoLabel(venda.forma_pagamento)}\n\n` +
-    `🛍️ *Itens Comprados:*\n${itensResumo}\n\n` +
+    `🛍️ *Itens:*\n${itensResumo}\n\n` +
     `💰 *Total Pago:* ${formatCurrency(venda.valor_total)}\n` +
-    `🛡️ *Garantia:* 90 dias sobre produtos usados/revisados e garantia legal.\n\n` +
+    `🛡️ *Garantia:* 90 dias sobre peças/acessórios e garantia legal sobre serviços.\n\n` +
     `Obrigado pela preferência! Qualquer dúvida, estamos à disposição no WhatsApp (41) 3565-2008.`
   );
 

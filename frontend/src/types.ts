@@ -140,8 +140,8 @@ export interface ItemEstoque {
   garantia_meses: number;
   detalhes_condicao?: string;
   localizacao?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type FormaPagamento = 'DINHEIRO' | 'PIX' | 'CARTAO_DEBITO' | 'CARTAO_CREDITO' | 'OUTRO';

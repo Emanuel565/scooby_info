@@ -29,7 +29,10 @@ import {
   Download,
   Laptop,
   Tag,
-  ShieldCheck
+  ShieldCheck,
+  Headphones,
+  Sparkles,
+  Printer
 } from 'lucide-react';
 
 interface MetricasEstoque {
@@ -314,18 +317,23 @@ export const AdminEstoque: React.FC = () => {
 
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
+      case 'SERVICO_BALCAO': return <Sparkles className="w-4 h-4 text-amber-400" />;
+      case 'ACESSORIO': return <Headphones className="w-4 h-4 text-purple-400" />;
       case 'NOTEBOOK': return <Laptop className="w-4 h-4 text-sky-400" />;
       case 'SSD': return <HardDrive className="w-4 h-4 text-emerald-400" />;
-      case 'MEMORIA': return <Cpu className="w-4 h-4 text-purple-400" />;
+      case 'MEMORIA': return <Cpu className="w-4 h-4 text-indigo-400" />;
       case 'TELA': return <Smartphone className="w-4 h-4 text-teal-400" />;
       case 'BATERIA': return <BatteryCharging className="w-4 h-4 text-amber-400" />;
-      case 'CONECTOR': return <Cable className="w-4 h-4 text-indigo-400" />;
+      case 'CONECTOR': return <Cable className="w-4 h-4 text-blue-400" />;
+      case 'INSUMO': return <Printer className="w-4 h-4 text-rose-400" />;
       default: return <Wrench className="w-4 h-4 text-slate-400" />;
     }
   };
 
   const categorias = [
     { id: 'TODAS', label: 'Todas as Categorias' },
+    { id: 'SERVICO_BALCAO', label: '⚡ Serviços de Balcão (Impressão, Currículo, etc.)' },
+    { id: 'ACESSORIO', label: '🎧 Acessórios & Periféricos (Cabos, Carregadores, Fones)' },
     { id: 'NOTEBOOK', label: '💻 Notebooks' },
     { id: 'SSD', label: '💾 SSDs' },
     { id: 'MEMORIA', label: '🧠 Memórias RAM' },
@@ -334,7 +342,7 @@ export const AdminEstoque: React.FC = () => {
     { id: 'TELA', label: '📱 Telas & Displays' },
     { id: 'BATERIA', label: '🔋 Baterias' },
     { id: 'CONECTOR', label: '🔌 Conectores & Cabos' },
-    { id: 'INSUMO', label: '🧪 Insumos & Tintas' },
+    { id: 'INSUMO', label: '🧪 Insumos, Papel & Tintas' },
     { id: 'OUTRO', label: 'Outros' }
   ];
 
@@ -817,18 +825,18 @@ export const AdminEstoque: React.FC = () => {
                     onChange={(e) => setCategoria(e.target.value)}
                     className="w-full p-2.5 rounded-xl bg-slate-950 border border-white/10 text-white focus:border-brand-500 focus:outline-none"
                   >
+                    <option value="SERVICO_BALCAO">⚡ Serviço de Balcão (Impressão, Currículo, etc.)</option>
+                    <option value="ACESSORIO">🎧 Acessório (Cabo, Fone, Capa, Película, etc.)</option>
                     <option value="NOTEBOOK">💻 Notebook</option>
                     <option value="PC_DESKTOP">🖥️ PC Desktop</option>
                     <option value="SSD">💾 SSD</option>
                     <option value="MEMORIA">🧠 Memória RAM</option>
                     <option value="PLACA_MAE">🔌 Placa-mãe</option>
-                    <option value="PLACA_VIDEO">🎮 Placa de Vídeo</option>
+                    <option value="PLACA_VIDEO">🎮 Placas de Vídeo</option>
                     <option value="TELA">📱 Tela / Display</option>
                     <option value="BATERIA">🔋 Bateria</option>
                     <option value="CARREGADOR">⚡ Carregador / Fonte</option>
-                    <option value="CELULAR">📱 Smartphone</option>
-                    <option value="INSUMO">🧪 Insumo / Tinta</option>
-                    <option value="ACESSORIO">🎧 Acessório</option>
+                    <option value="INSUMO">🧪 Insumo / Papelaria / Tinta</option>
                     <option value="OUTRO">Outro</option>
                   </select>
                 </div>
